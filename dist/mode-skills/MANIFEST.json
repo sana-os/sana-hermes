@@ -1,0 +1,112 @@
+{
+  "package_version": "0.3.0",
+  "mode": "skills",
+  "built_at": "2026-10-16T17:37:53.166962+00:00",
+  "sana_os_commit": "96f08c4f8465965c97d2db1b9b296a0ab1181173",
+  "sources": {
+    "frameworks/GMM.md": "7c2bca273e69d10e6727ac1a054f7c33ff64b05f44b26d94702f36e7580d0fea",
+    "frameworks/RBM.md": "cec0c56780c5538a3f38f1b5d73ac29c047fad45fd663c8670b821fa1d4d43d0",
+    "frameworks/CPM.md": "c31f8e1626198ee14f700097a7a6f0d8a3fe0d7a43c499593f6867bb5024f863",
+    "frameworks/RSM.md": "249585ebf8ad98af6d7f9d3fdea3493984da8a51af74b29b5775770253eac31e",
+    "frameworks/Legitimacy_Layer.md": "f154fe775194c11abc6d93dc8dbe7c1c2ea26141b27695c90808e9e0a031ecde",
+    "frameworks/History_Analysis.md": "830e2d6906375de356528da0e66eebaf40babbd833914d92e3dcbf311e5c7b93",
+    "frameworks/Value_Formation.md": "3d99f99e78b4c68cbd727231b12d72a5fe49f3766a74aae3875a24615a5fe2d0",
+    "frameworks/README.md": "b2cf85673d22ddd0007286f4bee64653d231e7f7333ebef892d2ca1725954f50",
+    "core/Core_Specification.md": "ae72a6a46d5b83ed89a96b1020ed2f027d600c38e9301795c8bcddd2ade46442",
+    "overlays/skills/sana-review-history.md": "4dac458f8b3d7f05a6ae23a036ea6fb6507c02e44d1f339473610f5bc28fe940",
+    "overlays/skills/sana-review-design.md": "fb83b046ea285a46dacaecfffb2a599fc5b9d5ed4dd2d9fea2944f456b99d3bd",
+    "overlays/skills/sana-review-framework-change.md": "bbaa395da51f65b9ead21e41b0bafee7339eda440af733bf9290c2a41824b960",
+    "overlays/skills/sana-friend-story.md": "211fc1e2ae5cfccbe2b0bff7cd7421b7cd09befde5e6623760cf5ea3278e899b",
+    "core/Core_Principle.md": "c20900fe6b726de85a7b3418b1b25bb2160b696948b90e50d585355ecee79b36",
+    "core/Integrated_Knowledge.md": "75c5cae614587e98a05ca55158b0a7ee355ac763ab0d5544bb01dd6a2500095f",
+    "core/Communication_Layer.md": "f848881544201f904517e432591baa513346871239bcf7d04a82fa28ba7106f5",
+    "personas/Persona_Template.md": "9a3faec193059916b789ba185c366d6493a460e2ffe92bdc6be0e263e09ce0f6",
+    "personas/Persona_History.md": "f5736e05274f2c4ec5d5703de3709e11510ef96c12e562324d7049bc3469f4da",
+    "personas/Persona_Coaching.md": "13d224fb61ca3d040b2780f413fde2a52be299a66b3bc833453cf3efb234cca0",
+    "personas/Persona_Reasoning.md": "746408c57afd108e3c873b22b82e2e323021ef82decec0a77016c56b2d428b3d"
+  },
+  "profiles": {
+    "sana-hub": {
+      "soul_chars": 27937,
+      "soul_sha256": "06e3a743be5cbb1df0c15cedff49d8c1be1b527a5e7b621219fbeeecc757a74e",
+      "skills": [
+        "sana-gmm",
+        "sana-rbm",
+        "sana-cpm",
+        "sana-rsm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis",
+        "sana-value-formation",
+        "sana-frameworks-index",
+        "sana-core-specification"
+      ],
+      "injection_scan": []
+    },
+    "sana-history": {
+      "soul_chars": 25107,
+      "soul_sha256": "52e330ab92a05f817140d5054d6ef9c738537ea6c45f7e5fb53ce40040c866ac",
+      "skills": [
+        "sana-gmm",
+        "sana-rbm",
+        "sana-cpm",
+        "sana-rsm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis"
+      ],
+      "injection_scan": []
+    },
+    "sana-coaching": {
+      "soul_chars": 26819,
+      "soul_sha256": "e93277d4f8a7c2cd5abbdab718e58c475581811d623404e11cec040e510a5f66",
+      "skills": [
+        "sana-rbm",
+        "sana-cpm",
+        "sana-value-formation"
+      ],
+      "injection_scan": []
+    },
+    "sana-reasoning": {
+      "soul_chars": 25578,
+      "soul_sha256": "7f187ffff4cd742fed742f6c8200a726a1793b172e7706dee2f79e4826c5d682",
+      "skills": [
+        "sana-rbm",
+        "sana-rsm"
+      ],
+      "injection_scan": []
+    },
+    "sana-review": {
+      "soul_chars": 28192,
+      "soul_sha256": "f651007088da1f96063b7e18a3596ee0a70a7589755bce5de06dd17de5042c05",
+      "skills": [
+        "sana-review-design",
+        "sana-review-history",
+        "sana-review-framework-change",
+        "sana-gmm",
+        "sana-rbm",
+        "sana-cpm",
+        "sana-rsm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis",
+        "sana-value-formation",
+        "sana-frameworks-index",
+        "sana-core-specification"
+      ],
+      "injection_scan": []
+    },
+    "sana-friend": {
+      "soul_chars": 28544,
+      "soul_sha256": "c04ff5c8d57040031b47b24da181cfd75448f700d07fea618baf11693cb6054d",
+      "skills": [
+        "sana-friend-story",
+        "sana-value-formation",
+        "sana-cpm",
+        "sana-rbm",
+        "sana-rsm",
+        "sana-gmm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis"
+      ],
+      "injection_scan": []
+    }
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "package_version": "0.3.0",
+  "skill_category": "sana-os",
+  "core_files": [
+    "core/Core_Principle.md",
+    "core/Integrated_Knowledge.md",
+    "core/Communication_Layer.md"
+  ],
+  "skills": {
+    "sana-gmm": {
+      "source": "frameworks/GMM.md",
+      "viewpoint": "Diagnoses structural stability across Layers A (survival), B (meaning/narrative) and C (institution): where structural pressure is accumulating. It does not judge who is right or predict outcomes.",
+      "description": "SANA GMM — pressure balance across Layers A/B/C. Where structural pressure accumulates across Layers A/B/C — layer gaps, stress, bottleneck layer. Load when diagnosing the balance of survival, meaning and institutions in a society, organization or era (層のバランス, 構造的ストレス, GMM).",
+      "short": "GMM — pressure balance across Layers A/B/C"
+    },
+    "sana-rbm": {
+      "source": "frameworks/RBM.md",
+      "viewpoint": "Identifies where demand exceeds supply for critical functions (Gap = Demand − Supply). Detects overload and bottlenecks, not failure of intent; assigns no blame.",
+      "description": "SANA RBM — where demand exceeds capacity. Gap, shortage and bottleneck of a function. Load when overload or exhaustion is suspected in a person, team, institution or state (リソース不足, 過負荷, ボトルネック, RBM). Not before premises are aligned.",
+      "short": "RBM — where demand exceeds capacity"
+    },
+    "sana-cpm": {
+      "source": "frameworks/CPM.md",
+      "viewpoint": "Describes how humans process unknown variables (X) under pressure: survival compression, narrative stabilisation, exploratory simulation, and the state of architects who can hold X without substituting it.",
+      "description": "SANA CPM — handling unknowns under pressure. How people handle unknowns under pressure — cognitive compression, narrative substitution, enemy construction, architect states. Load for witch hunts, panics, rumours, rigid thinking, or why a group stopped exploring (認知圧縮, 物語の置換, CPM).",
+      "short": "CPM — handling unknowns under pressure"
+    },
+    "sana-rsm": {
+      "source": "frameworks/RSM.md",
+      "viewpoint": "Models collective systems as networks of functional roles (Decider, Architect, Integrator, Executor, Observer, Auditor) and finds failures in that network: role capture, architect isolation, succession deficit.",
+      "description": "SANA RSM — failures in the network of roles. Organizations and states as networks of functional roles — role capture, architect isolation, missing auditors, succession deficit. Load for institutional dysfunction, military/bureaucratic takeover, failed reformers, team role conflict (役割の失敗, 改革者の孤立, RSM).",
+      "short": "RSM — failures in the network of roles"
+    },
+    "sana-legitimacy-layer": {
+      "source": "frameworks/Legitimacy_Layer.md",
+      "viewpoint": "Analyses civilizational cohesion as the alignment of Narrative Core (who we are) and Institution Core (what structure is valid); instability is the gap between them. It asks what is recognized as rightful, not who is morally correct.",
+      "description": "SANA Legitimacy — narrative vs institution core. Why a community accepts a structure as valid — Narrative Core vs Institution Core, legitimacy gap, void formation. Load for revolutions, civil wars, succession crises, regime legitimacy, inherited authority (正統性, 物語と制度の乖離, Legitimacy).",
+      "short": "Legitimacy — narrative vs institution core"
+    },
+    "sana-history-analysis": {
+      "source": "frameworks/History_Analysis.md",
+      "viewpoint": "Reads history through structure rather than correctness: Source Trifurcation (Fact / Perception / Record), non-competitive framing, and the Thought Experiment Sandbox for marked hypotheses.",
+      "description": "SANA History — Fact/Perception/Record, sandbox. Source Trifurcation (Fact / Perception / Record), non-competitive framing, narrative function, Thought Experiment Sandbox. Load before analysing any historical event, source, inscription, image or record, and before writing hypotheses about the past (史料の三分類, 歴史分析).",
+      "short": "History — Fact/Perception/Record, sandbox"
+    },
+    "sana-value-formation": {
+      "source": "frameworks/Value_Formation.md",
+      "viewpoint": "Models how personal value hierarchies form through reward/punishment systems and community membership; Proximity Rule (Priority = Impact / Distance), trust dynamics, priority filtering. b- and c-layer are the same survival rules in different phases.",
+      "description": "SANA Value Formation — proximity and priority. How a person's priorities form and why local pressure beats distant rules — Proximity Rule, trust dynamics, priority filtering, continuum of culture and institution. Load for personal conflict, peer pressure, workplace atmosphere, why someone follows local norms (価値観の形成, 近接性の法則).",
+      "short": "Value Formation — proximity and priority"
+    },
+    "sana-frameworks-index": {
+      "source": "frameworks/README.md",
+      "viewpoint": "Index of the SANA OS frameworks and the integration map showing how each lens feeds the others.",
+      "description": "SANA Index and integration map of all lenses. Load when choosing which lenses to combine for an analysis, or when explaining how the frameworks relate (フレームワーク一覧, 連携図).",
+      "short": "Index and integration map of all lenses"
+    },
+    "sana-core-specification": {
+      "source": "core/Core_Specification.md",
+      "viewpoint": "Technical specification of the SANA OS alignment engine: state machine, Δv logic, handshake and exposure gating, I/O contract. Developer reference, not a dialogue rule set.",
+      "description": "SANA Core engine spec (state machine, Δv, I/O). Load when designing or reviewing a SANA OS implementation, API, workflow or agent setup (実装仕様, エンジン設計).",
+      "short": "Core engine spec (state machine, Δv, I/O)"
+    },
+    "sana-review-history": {
+      "overlay": "overlays/skills/sana-review-history.md",
+      "short": "Review — historical observation and reasoning",
+      "viewpoint": "Whether each historical statement sits where its footing allows: observation, Fact / Perception / Record, or a marked hypothesis. It does not judge whether a hypothesis is true.",
+      "description": "SANA Review — historical observation and reasoning. Review History SANA output: observation errors, interpretation inside observation, inference stated as Fact, proper names and dates, F/P/R displacement, copies treated as originals, unmarked hypotheses (歴史レビュー, 固有名, 年代)."
+    },
+    "sana-review-design": {
+      "overlay": "overlays/skills/sana-review-design.md",
+      "short": "Review — designs, handoff briefs, build results",
+      "viewpoint": "Whether a design's premises are stated and footed, roles are separated, boundaries carry reasons, and results match the agreed brief. It does not substitute the reviewer's preferred design.",
+      "description": "SANA Review — designs, handoff briefs, build results. Review the Hub's plans and briefs and executors' results: unstated premises, unverified environment claims, role separation, silent fallbacks, boundaries without reasons, irreversible steps, evidence of completion (設計レビュー, 構築物レビュー)."
+    },
+    "sana-review-framework-change": {
+      "overlay": "overlays/skills/sana-review-framework-change.md",
+      "short": "Review — framework change: sharpened or shifted",
+      "viewpoint": "Whether a change to a SANA skill sharpens its fixed viewpoint, extends it, or shifts it to look at something else.",
+      "description": "SANA Review — framework change: sharpened or shifted. Review revisions of SANA skills and personas against their invariant viewpoint and the Core invariants (フレームワーク改訂, 研ぎ澄ましかズレか)."
+    },
+    "sana-friend-story": {
+      "overlay": "overlays/skills/sana-friend-story.md",
+      "short": "Story — characters, layers of the text, readings",
+      "viewpoint": "How a fictional character's choices follow from their premises and the pressures of their world, and how the layers of a text — what is shown, what a character perceives, what the narration frames, what readers infer — differ.",
+      "description": "SANA Story — characters, layers of the text, readings. Read novels, manga, anime, films, games, myths or the person's own fiction: spoilers and versions, shown vs perceived vs narrated vs inferred, why a character chose, world-level lenses, author vs character (物語の考察, キャラクター, 考察)."
+    }
+  },
+  "profiles": {
+    "sana-hub": {
+      "title": "Hub SANA",
+      "persona": {
+        "template": "personas/Persona_Template.md",
+        "custom_overlay": "overlays/Persona_Hub.custom.md",
+        "title": "Hub SANA Edition"
+      },
+      "skills": [
+        "sana-gmm",
+        "sana-rbm",
+        "sana-cpm",
+        "sana-rsm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis",
+        "sana-value-formation",
+        "sana-frameworks-index",
+        "sana-core-specification"
+      ]
+    },
+    "sana-history": {
+      "title": "History SANA",
+      "persona": {
+        "file": "personas/Persona_History.md"
+      },
+      "skills": [
+        "sana-gmm",
+        "sana-rbm",
+        "sana-cpm",
+        "sana-rsm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis"
+      ]
+    },
+    "sana-coaching": {
+      "title": "Coaching SANA",
+      "persona": {
+        "file": "personas/Persona_Coaching.md"
+      },
+      "skills": [
+        "sana-rbm",
+        "sana-cpm",
+        "sana-value-formation"
+      ]
+    },
+    "sana-reasoning": {
+      "title": "Reasoning SANA (推論AIくん)",
+      "persona": {
+        "file": "personas/Persona_Reasoning.md"
+      },
+      "skills": [
+        "sana-rbm",
+        "sana-rsm"
+      ]
+    },
+    "sana-review": {
+      "title": "SANA Review",
+      "persona": {
+        "template": "personas/Persona_Template.md",
+        "custom_overlay": "overlays/Persona_Review.custom.md",
+        "title": "SANA Review Edition"
+      },
+      "skills": [
+        "sana-review-design",
+        "sana-review-history",
+        "sana-review-framework-change",
+        "sana-gmm",
+        "sana-rbm",
+        "sana-cpm",
+        "sana-rsm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis",
+        "sana-value-formation",
+        "sana-frameworks-index",
+        "sana-core-specification"
+      ]
+    },
+    "sana-friend": {
+      "title": "Friend SANA",
+      "persona": {
+        "template": "personas/Persona_Template.md",
+        "custom_overlay": "overlays/Persona_Friend.custom.md",
+        "title": "Friend SANA Edition"
+      },
+      "skills": [
+        "sana-friend-story",
+        "sana-value-formation",
+        "sana-cpm",
+        "sana-rbm",
+        "sana-rsm",
+        "sana-gmm",
+        "sana-legitimacy-layer",
+        "sana-history-analysis"
+      ]
+    }
+  }
+}
