@@ -2,9 +2,22 @@
 
 What changed, why, and the observation behind it. `dist/` is committed, so the effect of each change on the instructions this package distributes is visible in the diff of the same commit. What the model finally receives also depends on how Hermes loads them (see the README, "4. 確認").
 
-## Unreleased
+## Version numbers
 
-Changes from the first review of this repository (2026-10-18).
+The number says whether the text the model receives has changed.
+
+- **0.x.0** — a SOUL.md or SKILL.md text changes: a persona, a skill, or a move of the SANA OS pin. Reinstall and check the behaviour.
+- **0.x.y** — no SOUL.md or SKILL.md text changes: CI, the installer, the README. `MANIFEST.json` may change (it records the version).
+- **1.0.0** — reserved for when the licence is decided and the repository is made public.
+
+Each version is an annotated tag `v<version>` on the merge commit of the pull request that completed it. A release is marked pre-release until it has been checked in a running Hermes session.
+Why: the question that matters after an update is whether the model now receives something different. Decided 2026-10-18.
+
+Versions before 0.4.0 have no tags: they were handed over as files and not kept (see 0.1.0–0.3.0 below).
+
+## 0.5.0 — 2026-10-18
+
+Changes from the first review of this repository (2026-10-18). A minor version because three personas change.
 
 ### Upstream pin
 
