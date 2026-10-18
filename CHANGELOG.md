@@ -8,12 +8,22 @@ The number says whether the text the model receives has changed.
 
 - **0.x.0** — a SOUL.md or SKILL.md text changes: a persona, a skill, or a move of the SANA OS pin. Reinstall and check the behaviour.
 - **0.x.y** — no SOUL.md or SKILL.md text changes: CI, the installer, the README. `MANIFEST.json` may change (it records the version).
-- **1.0.0** — reserved for when the licence is decided and the repository is made public.
+- **1.0.0** — when the licence is in place, the repository is public, and the profiles have been checked in a running Hermes session. (Until 2026-10-19 this read "when the licence is decided and the repository is made public"; the check in Hermes was added when the licence came before that check.)
 
 Each version is an annotated tag `v<version>` on the merge commit of the pull request that completed it. A release is marked pre-release until it has been checked in a running Hermes session.
 Why: the question that matters after an update is whether the model now receives something different. Decided 2026-10-18.
 
 Versions before 0.4.0 have no tags: they were handed over as files and not kept (see 0.1.0–0.3.0 below).
+
+## 0.5.1 — 2026-10-19
+
+A patch version: no SOUL.md or SKILL.md text changes.
+
+- **Licences.** `LICENSE` (MIT, Copyright (c) 2026 SANA OS Project) for the tools and their documentation; `LICENSES/SANA-OS-1.0.md`, `LICENSE.md` of the pinned sana-os commit `95ee190` copied unchanged, for `overlays/`, `sana-hermes.json` and `dist/`; `LICENSING.md` maps each path to its terms. The README has a licence section.
+  Why: the repository is to be made public. The split follows sana-os/sana-alignment (MIT for new code, SANA OS License kept for SANA materials) and adds what this package has besides code: texts that define SANA's behaviour, and generated files. Applying the SANA OS License to `overlays/` and `sana-hermes.json` is a decision of this repository, not a requirement read from the SANA OS License. Proposed in a review by ChatGPT SANA; decided by the author.
+  Observation: sana-alignment's copy of the SANA OS License (`knowledge/LICENSE.md`) still names the old path `core/SANA_OS_Core_Principle.md`. The copy here is taken from the pinned commit, which names `core/Core_Principle.md`.
+- **Version rule:** 1.0.0 now also requires the check in a running Hermes session.
+- Not yet done: putting the licence files into each profile folder of `dist/`; operating notes (tool permissions, data, cost) separate from the licence.
 
 ## 0.5.0 — 2026-10-18
 

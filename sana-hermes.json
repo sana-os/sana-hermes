@@ -1,5 +1,5 @@
 {
-  "package_version": "0.5.0",
+  "package_version": "0.5.1",
   "skill_category": "sana-os",
   "core_files": [
     "core/Core_Principle.md",
