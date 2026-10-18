@@ -23,6 +23,10 @@ Changes from the first review of this repository (2026-10-18).
 - New sections on what Hermes can and cannot restrict (delegation, toolsets) and on what persistent memory holds. Both record open decisions rather than make them.
 - Corrected statements that had fallen behind: Core_Specification is a skill of the Hub *and* the Review profile; the package adds four kinds of text, not three; only history, coaching and reasoning follow `personas/README.md`.
 
+### Personas (these change `dist/`; each is its own commit)
+
+- **Friend: showing a gap is optional, at most once per issue.** Before, the guardrail read as an instruction to show it once after understanding the person. Why: that wording went beyond T7 even in its current upstream text ("only once" is a limit, not a duty), and pressed a reframing on someone who only wants to be heard. Not showing it is now explicitly allowed.
+
 ## 0.4.0 — 2026-10-18
 
 ### Repository
