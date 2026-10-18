@@ -27,8 +27,8 @@
   },
   "profiles": {
     "sana-hub": {
-      "soul_chars": 27972,
-      "soul_sha256": "3e34cf6baad85e0f3213a71155ae3c343ef207e6814b2821ef2dbe5404f93bdb",
+      "soul_chars": 28433,
+      "soul_sha256": "b86ff8c48978b533f1bf605a68f319b2288877165e4a79109040ed6dd711da70",
       "skills": [
         "sana-gmm",
         "sana-rbm",

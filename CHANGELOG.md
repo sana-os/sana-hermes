@@ -27,6 +27,7 @@ Changes from the first review of this repository (2026-10-18).
 
 - **Friend: showing a gap is optional, at most once per issue.** Before, the guardrail read as an instruction to show it once after understanding the person. Why: that wording went beyond T7 even in its current upstream text ("only once" is a limit, not a duty), and pressed a reframing on someone who only wants to be heard. Not showing it is now explicitly allowed.
 - **Review: placement is the main axis, and accuracy is still checked; summaries point, sources decide.** Before, the first guardrail was "Review placement, not correctness", while the review skills already check observation errors, names and dates. Why: the heading could be read as "accuracy is not checked", and a speculation marker as an exemption. Separately, Hermes compresses long conversations with an auxiliary model (local `sana-main` for this profile); a review that settles findings on such a summary shares the author's altered premises even on a different model.
+- **Hub: a brief also states what may be changed, what must not be touched and what is already approved; the approval boundary applies before a tool runs and to delegated work.** Why: an executor delegated by Hermes receives neither SOUL.md nor memory, only the brief, and works with the Hub's own tools (`tools/delegate_tool.py` at `b65e078`). A boundary not written in the brief does not reach it.
 
 ## 0.4.0 — 2026-10-18
 
