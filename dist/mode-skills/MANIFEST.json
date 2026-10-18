@@ -1,5 +1,5 @@
 {
-  "package_version": "0.4.0",
+  "package_version": "0.5.0",
   "mode": "skills",
   "sana_os_commit": "95ee19087af52a3a28d0225de73b5a6c24e49ff1",
   "sana_os_commit_date": "2026-10-18T02:07:07+09:00",
@@ -27,8 +27,8 @@
   },
   "profiles": {
     "sana-hub": {
-      "soul_chars": 27972,
-      "soul_sha256": "3e34cf6baad85e0f3213a71155ae3c343ef207e6814b2821ef2dbe5404f93bdb",
+      "soul_chars": 28433,
+      "soul_sha256": "b86ff8c48978b533f1bf605a68f319b2288877165e4a79109040ed6dd711da70",
       "skills": [
         "sana-gmm",
         "sana-rbm",
@@ -71,8 +71,8 @@
       ]
     },
     "sana-review": {
-      "soul_chars": 28227,
-      "soul_sha256": "95aeb07b9812d1e5e4afba10944b4b5850a0664567c542ff5f45ab8cea6b8b54",
+      "soul_chars": 28914,
+      "soul_sha256": "914d45ab706db2a2ce5f112dcdfc65ac5587fc86bf579d60a43b43e9c2d76dce",
       "skills": [
         "sana-review-design",
         "sana-review-history",
@@ -89,8 +89,8 @@
       ]
     },
     "sana-friend": {
-      "soul_chars": 28579,
-      "soul_sha256": "1767c9c303955a1f5470aeb0c30bcd5c5cd40a6be2ef878b25aa370586a186d8",
+      "soul_chars": 28904,
+      "soul_sha256": "ca158ae7fcd2bfd11af3c4b33ea5231268693ffbbe070fade5d78985ecdfd450",
       "skills": [
         "sana-friend-story",
         "sana-value-formation",

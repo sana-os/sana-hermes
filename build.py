@@ -19,6 +19,7 @@ Modes
           skills are still emitted. Use it to compare behaviour with the skills mode.
 
 Checks performed on every build
+  * the SANA OS checkout is a full git clone, so every recorded source commit is real
   * core/Core_Principle.md appears byte-for-byte unchanged in every SOUL.md
   * SOUL.md length against Hermes' context-file cap (20,000 chars when the
     model's context window is unknown; see README for context_file_max_chars)
@@ -75,6 +76,15 @@ def file_commit(src: Path, rel: str) -> str:
         return "unknown"
 
 
+def is_shallow(src: Path) -> bool:
+    """In a shallow clone, `git log -- <file>` stops at the cut and names the wrong commit without failing."""
+    try:
+        return subprocess.run(["git", "-C", str(src), "rev-parse", "--is-shallow-repository"], capture_output=True,
+                              text=True, check=True).stdout.strip() == "true"
+    except Exception:
+        return False
+
+
 def provenance(rel: str) -> str:
     return f"<!-- SANA OS source: {rel} (included unchanged) -->\n\n"
 
@@ -107,7 +117,7 @@ def runtime_notes(skills: list[str], specs: dict, mode: str) -> str:
     return text.replace("{{LENS_SENTENCE}}", sentence)
 
 
-def build_skill(name: str, spec: dict, src: Path, commit: str, version: str, category: str) -> str:
+def build_skill(name: str, spec: dict, src: Path, category: str, source_commit: str) -> str:
     packaged = "overlay" in spec
     body = (HERE / spec["overlay"]).read_text(encoding="utf-8") if packaged else read(src, spec["source"])
     front = "\n".join([
@@ -125,7 +135,7 @@ def build_skill(name: str, spec: dict, src: Path, commit: str, version: str, cat
                   "definitions as a review procedure and may be refined independently of them.\n")
     else:
         source = (f"`{spec['source']}` from https://github.com/sana-os/sana-os, as last changed in commit "
-                  f"`{file_commit(src, spec['source'])[:12]}`, "
+                  f"`{source_commit[:12]}`, "
                   "included unchanged below. Powered by SANA OS — https://sana-os.org\n")
     header = (
         f"# SANA OS {'review skill' if packaged else 'lens'}: {name}\n\n"
@@ -177,6 +187,13 @@ def main() -> int:
     scanner = load_scanner(args.scan)
     core_principle = read(src, "core/Core_Principle.md")
     problems: list[str] = []
+    # Provenance must be real: the Source line of each skill and MANIFEST.json name commits.
+    if commit == "unknown":
+        problems.append(f"{src} is not a git checkout; the source commits cannot be recorded "
+                        "(clone sana-os, or run: git submodule update --init)")
+    elif is_shallow(src):
+        problems.append(f"{src} is a shallow clone; the Source line of each skill would name the wrong commit "
+                        f"(run: git -C {src} fetch --unshallow)")
     manifest: dict = {
         "package_version": version, "mode": args.mode,
         "sana_os_commit": commit, "sana_os_commit_date": commit_date, "sources": {}, "profiles": {},
@@ -187,7 +204,10 @@ def main() -> int:
     for name, spec in cfg["skills"].items():
         if not NAME_RE.match(name):
             problems.append(f"skill name not accepted by Hermes: {name}")
-        text = build_skill(name, spec, src, commit, version, category)
+        source_commit = "" if "overlay" in spec else file_commit(src, spec["source"])
+        if source_commit == "unknown":
+            problems.append(f"{name}: no commit found for {spec['source']}")
+        text = build_skill(name, spec, src, category, source_commit)
         if len(text) > SKILL_BODY_ADVISORY:
             problems.append(f"{name}: SKILL.md {len(text)} chars exceeds Hermes linter advisory {SKILL_BODY_ADVISORY}")
         built_skills[name] = text
