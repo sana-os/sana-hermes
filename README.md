@@ -4,7 +4,7 @@ SANA OS（https://github.com/sana-os/sana-os ）を Hermes Agent のプロファ
 SANA OS のリポジトリを正本とし、`build.py` がそこから Hermes 用の `SOUL.md` とスキルを生成します。`dist/` 以下はすべて生成物なので、SANA OS が更新されたら作り直せます。
 
 Powered by SANA OS — https://sana-os.org
-（SANA OS License v1.0 に基づく派生物です。Core_Principle.md は無改変で含めています。）
+（SANA OS License v1.0 に基づく派生物です。Core_Principle.md は無改変で含めています。ライセンスは下の「ライセンス」と [`LICENSING.md`](LICENSING.md)。）
 
 - 生成元：`upstream/sana-os`（Git のサブモジュール）が指している SANA OS のコミット。今どれを指しているかは `git submodule status`、または `dist/*/MANIFEST.json` の `sana_os_commit` で確認できます
 - 注入検査に使う Hermes のソース：`NousResearch/hermes-agent` `b65e078`（`sana-hermes.json` の `hermes_scan`）
@@ -294,8 +294,20 @@ Core_Specification §7.1 の「すべての状態はセッション内に限る�
 | プロジェクトの記録（決定、検討中、仮説、理由、日付） | ハブが、印と日付を付けて保存します |
 | 利用者についての情報 | フレンドは、本人が言ったことだけを保存し、個人的なことは保存してよいか確認します。推論は事実として保存しません |
 
+## ライセンス
+
+このリポジトリは、ファイルによって適用されるライセンスが違います。全体が MIT ではありません。パスごとの対応は [`LICENSING.md`](LICENSING.md) にあります。
+
+- **道具**（`build.py`、`install.ps1`、CI）とその説明文書には、[MIT License](LICENSE) を適用します。
+- **SANA の振る舞いを定める文章**（`overlays/` のペルソナ・手順・注記、`sana-hermes.json` の定義）と、**生成物**（`dist/` の `SOUL.md`・`SKILL.md`）には、[SANA OS License v1.0](LICENSES/SANA-OS-1.0.md) を適用します。生成したものだからといって MIT にはなりません。MIT の許諾は、これらを再ライセンスするものではありません。
+- SANA OS 本体（`upstream/sana-os`）は、そのリポジトリのライセンスに従います。
+- SANA OS の部分を使うときは、利用者に見える説明や文書に **"Powered by SANA OS"** と **https://sana-os.org** を表示してください。SOUL.md の中の表示は、モデルが読むものであって、利用者向けの表示の代わりにはなりません。
+
+`overlays/` などに SANA OS License を適用するのは、このリポジトリの決定です（2026-10-19）。SANA OS License の条文が、新しいファイルにも同じライセンスを求めているわけではありません。
+
 ## まだ入っていないもの
 
 - **レビュー結果の受け渡しの仕組み**：今は、作者のプロファイルが出力をファイルに書き出し、それを sana-review に読ませる手作業を想定しています。受け渡しの形が固まってから自動化してください。
 - **権限の割り当て**（上の「権限と委任」）
 - **対話の状態をセッションをまたいで持ち越すか**（上の「永続メモリに入るもの」）
+- **プロファイル単体で配るときのライセンス同梱**：今は `dist/` の各プロファイルにライセンス文書を入れていません。単体で配るときの扱いは `LICENSING.md` に書いてあります
