@@ -1,0 +1,3 @@
+[submodule "upstream/sana-os"]
+	path = upstream/sana-os
+	url = https://github.com/sana-os/sana-os.git

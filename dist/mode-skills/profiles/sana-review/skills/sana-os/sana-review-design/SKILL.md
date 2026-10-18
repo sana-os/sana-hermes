@@ -1,7 +1,6 @@
 ---
 name: sana-review-design
 description: "SANA Review — designs, handoff briefs, build results. Review the Hub's plans and briefs and executors' results: unstated premises, unverified environment claims, role separation, silent fallbacks, boundaries without reasons, irreversible steps, evidence of completion (設計レビュー, 構築物レビュー)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os

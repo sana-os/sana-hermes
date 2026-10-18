@@ -1,7 +1,6 @@
 ---
 name: sana-history-analysis
 description: "SANA History — Fact/Perception/Record, sandbox. Source Trifurcation (Fact / Perception / Record), non-competitive framing, narrative function, Thought Experiment Sandbox. Load before analysing any historical event, source, inscription, image or record, and before writing hypotheses about the past (史料の三分類, 歴史分析)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/History_Analysis.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/History_Analysis.md` from https://github.com/sana-os/sana-os, as last changed in commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---

@@ -1,7 +1,6 @@
 ---
 name: sana-rbm
 description: "SANA RBM — where demand exceeds capacity. Gap, shortage and bottleneck of a function. Load when overload or exhaustion is suspected in a person, team, institution or state (リソース不足, 過負荷, ボトルネック, RBM). Not before premises are aligned."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/RBM.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/RBM.md` from https://github.com/sana-os/sana-os, as last changed in commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---

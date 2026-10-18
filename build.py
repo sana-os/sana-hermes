@@ -4,9 +4,14 @@
 The SANA OS repository is the source of truth. Everything under dist/ is a
 derived projection and can be regenerated at any time:
 
-    python3 build.py --sana-os ../sana-os                 # skills mode (default)
-    python3 build.py --sana-os ../sana-os --mode inline   # GPTs-equivalent SOUL.md
-    python3 build.py --sana-os ../sana-os --scan path/to/hermes-agent/tools/threat_patterns.py
+    python3 build.py                                  # skills mode, from upstream/sana-os (submodule)
+    python3 build.py --mode inline                    # GPTs-equivalent SOUL.md
+    python3 build.py --sana-os ../sana-os             # build from another checkout
+    python3 build.py --scan path/to/hermes-agent/tools/threat_patterns.py
+
+The output is deterministic: the same SANA OS commit and the same sources give
+byte-identical files, so dist/ can be committed and its diff shows exactly what
+changes in the text the model receives.
 
 Modes
   skills  SOUL.md = Core + persona + Hermes notes; frameworks become on-demand skills.
@@ -23,7 +28,6 @@ Checks performed on every build
 from __future__ import annotations
 
 import argparse
-import datetime as dt
 import hashlib
 import importlib.util
 import json
@@ -52,10 +56,21 @@ def read(src: Path, rel: str) -> str:
         return fh.read()
 
 
-def upstream_commit(src: Path) -> str:
+def upstream_commit(src: Path) -> tuple[str, str]:
+    """(commit hash, committer date) of the SANA OS checkout."""
     try:
-        return subprocess.run(["git", "-C", str(src), "rev-parse", "HEAD"], capture_output=True,
-                              text=True, check=True).stdout.strip()
+        out = subprocess.run(["git", "-C", str(src), "log", "-1", "--format=%H %cI"], capture_output=True,
+                             text=True, check=True).stdout.split()
+        return out[0], out[1]
+    except Exception:
+        return "unknown", "unknown"
+
+
+def file_commit(src: Path, rel: str) -> str:
+    """Last commit that changed this file. Used instead of HEAD so a skill changes only when its source does."""
+    try:
+        return subprocess.run(["git", "-C", str(src), "log", "-1", "--format=%H", "--", rel], capture_output=True,
+                              text=True, check=True).stdout.strip() or "unknown"
     except Exception:
         return "unknown"
 
@@ -99,7 +114,6 @@ def build_skill(name: str, spec: dict, src: Path, commit: str, version: str, cat
         "---",
         f"name: {name}",
         f"description: {json.dumps(spec['description'], ensure_ascii=False)}",
-        f"version: {json.dumps(version)}",
         "metadata:",
         "  hermes:",
         f"    category: {category}",
@@ -110,7 +124,8 @@ def build_skill(name: str, spec: dict, src: Path, commit: str, version: str, cat
         source = ("Written for this package (sana-hermes); not part of SANA OS. It applies the SANA OS "
                   "definitions as a review procedure and may be refined independently of them.\n")
     else:
-        source = (f"`{spec['source']}` from https://github.com/sana-os/sana-os at commit `{commit[:12]}`, "
+        source = (f"`{spec['source']}` from https://github.com/sana-os/sana-os, as last changed in commit "
+                  f"`{file_commit(src, spec['source'])[:12]}`, "
                   "included unchanged below. Powered by SANA OS — https://sana-os.org\n")
     header = (
         f"# SANA OS {'review skill' if packaged else 'lens'}: {name}\n\n"
@@ -144,7 +159,8 @@ def load_scanner(path: str | None):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--sana-os", required=True, help="path to a sana-os/sana-os checkout")
+    ap.add_argument("--sana-os", default=str(HERE / "upstream" / "sana-os"),
+                    help="path to a sana-os/sana-os checkout (default: the upstream/sana-os submodule)")
     ap.add_argument("--mode", choices=["skills", "inline"], default="skills")
     ap.add_argument("--out", default=None, help="output dir (default: dist/mode-<mode>)")
     ap.add_argument("--scan", default=None, help="path to hermes-agent/tools/threat_patterns.py (optional)")
@@ -155,15 +171,15 @@ def main() -> int:
     out = Path(args.out) if args.out else HERE / "dist" / f"mode-{args.mode}"
     if out.exists():
         shutil.rmtree(out)
-    commit = upstream_commit(src)
+    commit, commit_date = upstream_commit(src)
     version = cfg["package_version"]
     category = cfg["skill_category"]
     scanner = load_scanner(args.scan)
     core_principle = read(src, "core/Core_Principle.md")
     problems: list[str] = []
     manifest: dict = {
-        "package_version": version, "mode": args.mode, "built_at": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "sana_os_commit": commit, "sources": {}, "profiles": {},
+        "package_version": version, "mode": args.mode,
+        "sana_os_commit": commit, "sana_os_commit_date": commit_date, "sources": {}, "profiles": {},
     }
 
     # Skills (shared definitions, copied into each profile that uses them)
@@ -212,10 +228,11 @@ def main() -> int:
             (sd / "SKILL.md").write_text(built_skills[s], encoding="utf-8", newline="\n")
 
         findings = scanner(soul, scope="context") if scanner else None
+        if findings:
+            problems.append(f"{pname}: Hermes injection scan matched {findings}")
         n = len(soul)
         manifest["profiles"][pname] = {
             "soul_chars": n, "soul_sha256": sha256(soul), "skills": pcfg["skills"],
-            "injection_scan": findings if scanner else "not run",
         }
         note = "OK" if n <= SOUL_FLOOR_CAP else f"over {SOUL_FLOOR_CAP:,} — pin context_file_max_chars"
         scan = "" if findings is None else f"  scan: {findings or 'clean'}"

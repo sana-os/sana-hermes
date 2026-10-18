@@ -1,7 +1,6 @@
 ---
 name: sana-review-framework-change
 description: "SANA Review — framework change: sharpened or shifted. Review revisions of SANA skills and personas against their invariant viewpoint and the Core invariants (フレームワーク改訂, 研ぎ澄ましかズレか)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
