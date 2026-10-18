@@ -1,6 +1,27 @@
 # Changelog
 
-What changed, why, and the observation behind it. `dist/` is committed, so the effect of each change on what the model receives is visible in the diff of the same commit.
+What changed, why, and the observation behind it. `dist/` is committed, so the effect of each change on the instructions this package distributes is visible in the diff of the same commit. What the model finally receives also depends on how Hermes loads them (see the README, "4. 確認").
+
+## Unreleased
+
+Changes from the first review of this repository (2026-10-18).
+
+### Upstream pin
+
+- Unchanged: sana-os `95ee190`, which includes sana-os PR #1 (mechanical fixes). **Not yet included:** decision 0001 (positions of the invariants), the heading wording, and decision 0002 (scope of T7). SOUL.md therefore still carries the Template's earlier T7 text, "Offer alternative framing or structural views only once."
+
+### Build and CI (no change to `dist/`)
+
+- **A shallow or missing history stops the build.** The CI step no longer hides a failed `fetch --unshallow` behind `|| true`, and `build.py` refuses a shallow clone or a folder that is not a git checkout. Observation: from a `--depth 3` clone the old build wrote Source lines without error, naming commits that did not change those files.
+- **`install.ps1` reads `config.yaml` and reports a profile as NOT READY** when `context_file_max_chars` is missing or below the SOUL.md length. It still does not edit the file. Why: nothing checked the setting the README asks for, and a cut SOUL.md loses its middle silently.
+
+### README (no change to `dist/`)
+
+- The scope of `context_file_max_chars` is stated: it is Hermes' cap on context files, not the model's context window. The runtime checks `/context` and `prompt-size` are added. "Works with any model" is no longer claimed.
+- `dist/` is described as the instructions this package distributes, not as what the model receives.
+- sana-review: neither `fallback_providers` nor the legacy `fallback_model` is to be set; the check is that `hermes fallback list` is empty. Observation: Hermes merges both keys into one chain (`hermes_cli/fallback_config.py` at `b65e078`), and `hermes fallback add` writes `fallback_providers`, which the README did not mention.
+- New sections on what Hermes can and cannot restrict (delegation, toolsets) and on what persistent memory holds. Both record open decisions rather than make them.
+- Corrected statements that had fallen behind: Core_Specification is a skill of the Hub *and* the Review profile; the package adds four kinds of text, not three; only history, coaching and reasoning follow `personas/README.md`.
 
 ## 0.4.0 — 2026-10-18
 
