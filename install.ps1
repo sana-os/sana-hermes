@@ -8,6 +8,8 @@
   An existing SOUL.md and skills\sana-os folder are first moved to
   <profile>\sana-os-backups\<timestamp>\ so nothing is lost.
   config.yaml, memories, sessions and other skills are not touched.
+  config.yaml is read, not changed: if context_file_max_chars is missing or
+  below the SOUL.md length, the profile is reported as not ready.
 
 .EXAMPLE
   .\install.ps1 -Name sana-hub -WhatIf
@@ -33,8 +35,10 @@ $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $distRoot = Join-Path $PSScriptRoot "dist\mode-$Mode\profiles"
 
 if (-not (Test-Path -LiteralPath $distRoot)) {
-    throw "Build output not found: $distRoot  (run: python build.py --sana-os <path> --mode $Mode)"
+    throw "Build output not found: $distRoot  (run: python build.py --mode $Mode)"
 }
+$manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot "dist\mode-$Mode\MANIFEST.json") -Raw -Encoding UTF8 | ConvertFrom-Json
+$notReady = @()
 
 foreach ($p in $Name) {
     $src = Join-Path $distRoot $p
@@ -72,12 +76,37 @@ foreach ($p in $Name) {
         Copy-Item -LiteralPath (Join-Path $src 'skills\sana-os') -Destination $skillsDst -Recurse -Force
     }
 
-    $chars = (Get-Content -LiteralPath (Join-Path $src 'SOUL.md') -Raw -Encoding UTF8).Length
+    # Character count as Hermes counts it (Python len), recorded by build.py.
+    # PowerShell's .Length counts UTF-16 units and can differ.
+    $chars = [int]$manifest.profiles.$p.soul_chars
     Write-Host "   SOUL.md: $chars chars. Skills: $((Get-ChildItem -LiteralPath (Join-Path $src 'skills\sana-os') -Directory).Name -join ', ')"
-    if ($chars -gt 20000) {
-        Write-Host "   Note: over 20,000 chars. Set context_file_max_chars in this profile's config.yaml (see README)."
+
+    # Read-only check of config.yaml. This script never edits it.
+    # It checks only Hermes' cap on context files. Whether the whole prompt fits
+    # the model's context window is a separate check (/context in a session).
+    $cfgPath = Join-Path $dst 'config.yaml'
+    $cap = $null
+    if (Test-Path -LiteralPath $cfgPath) {
+        $m = [regex]::Match((Get-Content -LiteralPath $cfgPath -Raw -Encoding UTF8),
+                            '(?m)^context_file_max_chars:[ \t]*(\d+)[ \t]*(#.*)?\r?$')
+        if ($m.Success) { $cap = [int]$m.Groups[1].Value }
+    }
+    if ($null -eq $cap) {
+        if ($chars -gt 20000) {
+            Write-Warning "NOT READY: context_file_max_chars is not pinned in $cfgPath."
+            Write-Warning "  Hermes then caps SOUL.md by the model's context length, and at 20,000 chars when that is unknown; the middle would be cut. See README."
+            $notReady += $p
+        }
+    } elseif ($cap -lt $chars) {
+        Write-Warning "NOT READY: context_file_max_chars is $cap, below the $chars chars of SOUL.md; the middle would be cut."
+        $notReady += $p
+    } else {
+        Write-Host "   context_file_max_chars: $cap (>= $chars). Check /context in a new session as well."
     }
 }
 
 Write-Host ''
-Write-Host 'Done. Start a NEW Hermes session for SOUL.md changes to take effect.'
+if ($notReady.Count -gt 0) {
+    Write-Warning "Installed, but not ready: $($notReady -join ', '). Fix config.yaml as above, then start a new session."
+}
+Write-Host 'Done. Start a NEW Hermes session for SOUL.md changes to take effect; run /context there and check that SOUL.md is loaded, not truncated.'
