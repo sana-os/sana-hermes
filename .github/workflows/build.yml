@@ -37,18 +37,36 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch the pinned Hermes scanner
+      # The scanner is fetched with an authenticated, sparse git checkout of the
+      # pinned commit. Why: the first run fetched it from
+      # raw.githubusercontent.com without authentication and got HTTP 429
+      # (rate limit on shared runners). The commit hash pins the content.
+      - name: Read the pinned Hermes scanner from sana-hermes.json
+        id: scan
+        shell: bash
         run: |
-          repo=$(python3 -c "import json;print(json.load(open('sana-hermes.json'))['hermes_scan']['repository'])")
-          ref=$(python3 -c "import json;print(json.load(open('sana-hermes.json'))['hermes_scan']['commit'])")
-          path=$(python3 -c "import json;print(json.load(open('sana-hermes.json'))['hermes_scan']['file'])")
-          raw=${repo/github.com/raw.githubusercontent.com}
-          curl -fsSL "$raw/$ref/$path" -o "$RUNNER_TEMP/threat_patterns.py"
+          python3 - >> "$GITHUB_OUTPUT" <<'EOF'
+          import json
+          s = json.load(open("sana-hermes.json"))["hermes_scan"]
+          print("repository=" + s["repository"].removeprefix("https://github.com/"))
+          print("commit=" + s["commit"])
+          print("file=" + s["file"])
+          EOF
+
+      - name: Fetch the pinned Hermes scanner
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.scan.outputs.repository }}
+          ref: ${{ steps.scan.outputs.commit }}
+          path: .hermes-scan
+          sparse-checkout: ${{ steps.scan.outputs.file }}
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Build both modes with the scan
         run: |
-          python3 build.py --scan "$RUNNER_TEMP/threat_patterns.py"
-          python3 build.py --mode inline --scan "$RUNNER_TEMP/threat_patterns.py"
+          python3 build.py --scan ".hermes-scan/${{ steps.scan.outputs.file }}"
+          python3 build.py --mode inline --scan ".hermes-scan/${{ steps.scan.outputs.file }}"
 
       - name: Committed dist/ matches the sources
         run: |

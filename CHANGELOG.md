@@ -26,6 +26,7 @@ Changes from the first review of this repository (2026-10-18). A minor version b
 ### Build and CI (no change to `dist/`)
 
 - **A shallow or missing history stops the build.** The CI step no longer hides a failed `fetch --unshallow` behind `|| true`, and `build.py` refuses a shallow clone or a folder that is not a git checkout. Observation: from a `--depth 3` clone the old build wrote Source lines without error, naming commits that did not change those files.
+- **CI fetches the Hermes scanner with an authenticated sparse checkout** of the pinned commit, instead of an unauthenticated download from raw.githubusercontent.com. Observation: the first CI run of this repository (push of `setup/repository`, 2026-10-18) failed with HTTP 429 from that download, before any build step ran.
 - **`install.ps1` reads `config.yaml` and reports a profile as NOT READY** when `context_file_max_chars` is missing or below the SOUL.md length. It still does not edit the file. Why: nothing checked the setting the README asks for, and a cut SOUL.md loses its middle silently.
 
 ### README (no change to `dist/`)
