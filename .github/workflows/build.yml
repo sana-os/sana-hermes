@@ -22,8 +22,16 @@ jobs:
 
       # build.py names, for each framework skill, the last commit that changed
       # its source file. That needs the submodule's history, not a shallow copy.
-      - name: Full history for the SANA OS submodule
-        run: git -C upstream/sana-os fetch --unshallow || true
+      # Fetch only when the copy is shallow, and fail if it still is: a failed
+      # fetch must not pass silently (build.py also refuses a shallow copy).
+      - name: Ensure full history for the SANA OS submodule
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$(git -C upstream/sana-os rev-parse --is-shallow-repository)" = "true" ]; then
+            git -C upstream/sana-os fetch --unshallow
+          fi
+          test "$(git -C upstream/sana-os rev-parse --is-shallow-repository)" = "false"
 
       - uses: actions/setup-python@v5
         with:
