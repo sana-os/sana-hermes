@@ -1,7 +1,6 @@
 ---
 name: sana-review-history
 description: "SANA Review — historical observation and reasoning. Review History SANA output: observation errors, interpretation inside observation, inference stated as Fact, proper names and dates, F/P/R displacement, copies treated as originals, unmarked hypotheses (歴史レビュー, 固有名, 年代)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os

@@ -1,7 +1,6 @@
 ---
 name: sana-legitimacy-layer
 description: "SANA Legitimacy — narrative vs institution core. Why a community accepts a structure as valid — Narrative Core vs Institution Core, legitimacy gap, void formation. Load for revolutions, civil wars, succession crises, regime legitimacy, inherited authority (正統性, 物語と制度の乖離, Legitimacy)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,14 +17,11 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/Legitimacy_Layer.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/Legitimacy_Layer.md` from https://github.com/sana-os/sana-os, as last changed in commit `fcafe67f24bf`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---
 
-# 📄 Legitimacy Layer 1.0 – SANA Edition
-
-````markdown
 ---
 title: "Legitimacy Layer 1.0 – SANA Edition"
 framework: "Legitimacy Layer"
@@ -41,6 +37,8 @@ related_frameworks:
 source_theory:
   - Studies of Core Successional Principles (SCSP)
 ---
+
+# 📄 Legitimacy Layer 1.0 – SANA Edition
 
 # Legitimacy Layer 1.0 – SANA Edition
 

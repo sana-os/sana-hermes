@@ -1,7 +1,6 @@
 ---
 name: sana-friend-story
 description: "SANA Story — characters, layers of the text, readings. Read novels, manga, anime, films, games, myths or the person's own fiction: spoilers and versions, shown vs perceived vs narrated vs inferred, why a character chose, world-level lenses, author vs character (物語の考察, キャラクター, 考察)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os

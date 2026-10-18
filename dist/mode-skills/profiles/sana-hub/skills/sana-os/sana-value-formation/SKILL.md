@@ -1,7 +1,6 @@
 ---
 name: sana-value-formation
 description: "SANA Value Formation — proximity and priority. How a person's priorities form and why local pressure beats distant rules — Proximity Rule, trust dynamics, priority filtering, continuum of culture and institution. Load for personal conflict, peer pressure, workplace atmosphere, why someone follows local norms (価値観の形成, 近接性の法則)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/Value_Formation.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/Value_Formation.md` from https://github.com/sana-os/sana-os, as last changed in commit `1b8c84d6ded5`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---
@@ -28,7 +27,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## [Fact] Empirical Layer — Biological and Social Foundations
 
-- [cite_start]**Origin of Values:** Human value formation begins as an adaptation to an innate **reward/punishment system**[cite: 135]. Infants, totally dependent on caregivers, learn strategies to distinguish *reward=comfort* and *punishment=discomfort* for survival.
+- **Origin of Values:** Human value formation begins as an adaptation to an innate **reward/punishment system**. Infants, totally dependent on caregivers, learn strategies to distinguish *reward=comfort* and *punishment=discomfort* for survival.
 - **Community as Survival Unit:** Interaction with caregivers functions as the first **community**. As development proceeds, individuals integrate patterns from multiple groups (family, school, nation), creating a **hierarchy of values**.
 - **The Three Layers (a/b/c):**
   - **a-layer (Instinct):** Biological survival, safety, physiological needs.
@@ -54,13 +53,13 @@ This is what the lens looks at. The procedures and examples below may be refined
 - **Conclusion:** It is biologically rational for humans to prioritize "local atmosphere" over "global justice" to ensure daily survival.
 
 ### 2. The Mechanism of Conflict ($\Delta v$)
-- [cite_start]**Value Conflict ($\Delta v$):** Misalignment between layers creates stress [cite: 160-166].
+- **Value Conflict ($\Delta v$):** Misalignment between layers creates stress.
   - **Internal Conflict:** "My a-layer (fear) vs. Company's c-layer (rules)."
   - **Inter-layer Conflict:** "Workplace b-layer (overtime culture) vs. National c-layer (Labor Standards Act)."
-- **Trust Dynamics:** Trust is a feedback loop of reward provision. [cite_start]When a community fails to provide protection (rewards), individuals seek new communities [cite: 216-220].
+- **Trust Dynamics:** Trust is a feedback loop of reward provision. When a community fails to provide protection (rewards), individuals seek new communities.
 
 ### 3. Protocol: Zero-Doubt Observation
-- [cite_start]To analyze these dynamics, SANA must adopt a "Zero-Doubt" stance [cite: 76-78].
+- To analyze these dynamics, SANA must adopt a "Zero-Doubt" stance.
 - Strip away moral judgments ("This is wrong"). Observe purely as a biologist: "Which reward system is this individual adapting to?"
 
 ---
@@ -90,6 +89,6 @@ This is what the lens looks at. The procedures and examples below may be refined
 ---
 
 ## [Appendix] Supplementary Information
-- **Source Data:** `価値観の形成5.dot`, `SCSP_Integrated.dot`, `疑うというステップを排除した分析ロジック.doc`
-- **Related Frameworks:** `history-analysis-framework.md` (Macro dynamics), `communication-flow.md` (Dialogue tactics)
+- **Source Data:** `価値観の形成5.dot`, `SCSP_Integrated.dot`, `疑うというステップを排除した分析ロジック.doc` (the author's working files; not included in this repository)
+- **Related Frameworks:** [`History_Analysis.md`](History_Analysis.md) (Macro dynamics), [`Communication_Layer.md`](../core/Communication_Layer.md) (Dialogue tactics)
 - **Version:** 2.0 (Complete Edition / SANA OS)

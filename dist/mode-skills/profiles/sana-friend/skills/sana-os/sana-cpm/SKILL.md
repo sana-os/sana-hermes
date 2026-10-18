@@ -1,7 +1,6 @@
 ---
 name: sana-cpm
 description: "SANA CPM — handling unknowns under pressure. How people handle unknowns under pressure — cognitive compression, narrative substitution, enemy construction, architect states. Load for witch hunts, panics, rumours, rigid thinking, or why a group stopped exploring (認知圧縮, 物語の置換, CPM)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,14 +17,11 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/CPM.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/CPM.md` from https://github.com/sana-os/sana-os, as last changed in commit `fcafe67f24bf`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---
 
-# 📄 CPM 1.1 – SANA Edition
-
-```markdown
 ---
 title: "CPM 1.1 – SANA Edition"
 framework: "Cognitive Processing Model"
@@ -39,6 +35,8 @@ related_frameworks:
   - History Analysis
 metadata_spec: "CPM Metadata Spec – SANA Edition"
 ---
+
+# 📄 CPM 1.1 – SANA Edition
 
 # CPM 1.1 – SANA Edition
 
@@ -556,7 +554,7 @@ This enables SANA OS to maintain **psychological safety** while examining confli
 
 # 📄 CPM Metadata Spec – SANA Edition.md
 
-```markdown
+```yaml
 ---
 title: "CPM Metadata Spec – SANA Edition"
 framework: "Cognitive Processing Model"
@@ -571,6 +569,7 @@ related_frameworks:
   - History Analysis
 purpose: "Define canonical metadata fields produced by CPM"
 ---
+```
 
 # CPM Metadata Spec – SANA Edition
 

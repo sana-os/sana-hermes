@@ -141,9 +141,6 @@ Fatal bugs in human psychology and organizational structure during macro-crises.
 
 <!-- SANA OS source: core/Communication_Layer.md (included unchanged) -->
 
-# 📄 Communication Layer 1.0 – SANA Edition
-
-```markdown
 ---
 title: "Communication Layer 1.0 – SANA Edition"
 framework: "Communication Layer (Dialogue Processing Model)"
@@ -160,6 +157,8 @@ related_frameworks:
 source_framework:
   - Communication Flow – Complete Version
 ---
+
+# 📄 Communication Layer 1.0 – SANA Edition
 
 # Communication Layer 1.0 – SANA Edition
 
@@ -851,9 +850,6 @@ Future extensions (e.g., dynamic modeling, probabilistic stress) require a major
 
 <!-- SANA OS source: frameworks/CPM.md (included unchanged) -->
 
-# 📄 CPM 1.1 – SANA Edition
-
-```markdown
 ---
 title: "CPM 1.1 – SANA Edition"
 framework: "Cognitive Processing Model"
@@ -867,6 +863,8 @@ related_frameworks:
   - History Analysis
 metadata_spec: "CPM Metadata Spec – SANA Edition"
 ---
+
+# 📄 CPM 1.1 – SANA Edition
 
 # CPM 1.1 – SANA Edition
 
@@ -1384,7 +1382,7 @@ This enables SANA OS to maintain **psychological safety** while examining confli
 
 # 📄 CPM Metadata Spec – SANA Edition.md
 
-```markdown
+```yaml
 ---
 title: "CPM Metadata Spec – SANA Edition"
 framework: "Cognitive Processing Model"
@@ -1399,6 +1397,7 @@ related_frameworks:
   - History Analysis
 purpose: "Define canonical metadata fields produced by CPM"
 ---
+```
 
 # CPM Metadata Spec – SANA Edition
 
@@ -1819,7 +1818,7 @@ Rather than focusing on individuals or personalities, RSM treats organizations a
 
 The purpose of RSM is to identify **structural bottlenecks and failure modes** that arise when these roles become unbalanced.
 
-Within the SANA OS framework, RSM primarily describes the **role structure of Layer C (institutions and operational systems)** in the General Meaning Model (GMM), while maintaining a connection to Layer B (narratives and meaning structures).
+Within the SANA OS framework, RSM primarily describes the **role structure of Layer C (institutions and operational systems)** in the Governance Maturity Model (GMM), while maintaining a connection to Layer B (narratives and meaning structures).
 
 RSM is primarily a **diagnostic model**, used to clarify structural friction and align premises within collective systems.
 
@@ -2194,9 +2193,6 @@ Version 1.3 – SANA Edition
 
 <!-- SANA OS source: frameworks/Legitimacy_Layer.md (included unchanged) -->
 
-# 📄 Legitimacy Layer 1.0 – SANA Edition
-
-````markdown
 ---
 title: "Legitimacy Layer 1.0 – SANA Edition"
 framework: "Legitimacy Layer"
@@ -2212,6 +2208,8 @@ related_frameworks:
 source_theory:
   - Studies of Core Successional Principles (SCSP)
 ---
+
+# 📄 Legitimacy Layer 1.0 – SANA Edition
 
 # Legitimacy Layer 1.0 – SANA Edition
 

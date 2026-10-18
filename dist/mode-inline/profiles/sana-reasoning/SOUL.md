@@ -141,9 +141,6 @@ Fatal bugs in human psychology and organizational structure during macro-crises.
 
 <!-- SANA OS source: core/Communication_Layer.md (included unchanged) -->
 
-# 📄 Communication Layer 1.0 – SANA Edition
-
-```markdown
 ---
 title: "Communication Layer 1.0 – SANA Edition"
 framework: "Communication Layer (Dialogue Processing Model)"
@@ -160,6 +157,8 @@ related_frameworks:
 source_framework:
   - Communication Flow – Complete Version
 ---
+
+# 📄 Communication Layer 1.0 – SANA Edition
 
 # Communication Layer 1.0 – SANA Edition
 
@@ -697,7 +696,7 @@ Rather than focusing on individuals or personalities, RSM treats organizations a
 
 The purpose of RSM is to identify **structural bottlenecks and failure modes** that arise when these roles become unbalanced.
 
-Within the SANA OS framework, RSM primarily describes the **role structure of Layer C (institutions and operational systems)** in the General Meaning Model (GMM), while maintaining a connection to Layer B (narratives and meaning structures).
+Within the SANA OS framework, RSM primarily describes the **role structure of Layer C (institutions and operational systems)** in the Governance Maturity Model (GMM), while maintaining a connection to Layer B (narratives and meaning structures).
 
 RSM is primarily a **diagnostic model**, used to clarify structural friction and align premises within collective systems.
 

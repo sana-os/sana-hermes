@@ -1,7 +1,6 @@
 ---
 name: sana-frameworks-index
 description: "SANA Index and integration map of all lenses. Load when choosing which lenses to combine for an analysis, or when explaining how the frameworks relate (フレームワーク一覧, 連携図)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/README.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/README.md` from https://github.com/sana-os/sana-os, as last changed in commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---

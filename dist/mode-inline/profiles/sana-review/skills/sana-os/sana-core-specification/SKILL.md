@@ -1,7 +1,6 @@
 ---
 name: sana-core-specification
 description: "SANA Core engine spec (state machine, Δv, I/O). Load when designing or reviewing a SANA OS implementation, API, workflow or agent setup (実装仕様, エンジン設計)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`core/Core_Specification.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`core/Core_Specification.md` from https://github.com/sana-os/sana-os, as last changed in commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---

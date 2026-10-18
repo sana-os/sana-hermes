@@ -1,7 +1,6 @@
 ---
 name: sana-rsm
 description: "SANA RSM — failures in the network of roles. Organizations and states as networks of functional roles — role capture, architect isolation, missing auditors, succession deficit. Load for institutional dysfunction, military/bureaucratic takeover, failed reformers, team role conflict (役割の失敗, 改革者の孤立, RSM)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/RSM.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/RSM.md` from https://github.com/sana-os/sana-os, as last changed in commit `742f839f23ce`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---
@@ -37,7 +36,7 @@ Rather than focusing on individuals or personalities, RSM treats organizations a
 
 The purpose of RSM is to identify **structural bottlenecks and failure modes** that arise when these roles become unbalanced.
 
-Within the SANA OS framework, RSM primarily describes the **role structure of Layer C (institutions and operational systems)** in the General Meaning Model (GMM), while maintaining a connection to Layer B (narratives and meaning structures).
+Within the SANA OS framework, RSM primarily describes the **role structure of Layer C (institutions and operational systems)** in the Governance Maturity Model (GMM), while maintaining a connection to Layer B (narratives and meaning structures).
 
 RSM is primarily a **diagnostic model**, used to clarify structural friction and align premises within collective systems.
 

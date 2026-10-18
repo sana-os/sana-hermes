@@ -6,8 +6,11 @@ SANA OS のリポジトリを正本とし、`build.py` がそこから Hermes �
 Powered by SANA OS — https://sana-os.org
 （SANA OS License v1.0 に基づく派生物です。Core_Principle.md は無改変で含めています。）
 
-- 生成元: `sana-os/sana-os` コミット `96f08c4f8465`（2026-04-05, "Full replace — SANA OS v1.0"）
-- 動作確認に使った Hermes のソース: `NousResearch/hermes-agent` `b65e078`（2026-10-16）
+- 生成元：`upstream/sana-os`（Git のサブモジュール）が指している SANA OS のコミット。今どれを指しているかは `git submodule status`、または `dist/*/MANIFEST.json` の `sana_os_commit` で確認できます
+- 注入検査に使う Hermes のソース：`NousResearch/hermes-agent` `b65e078`（`sana-hermes.json` の `hermes_scan`）
+- 変更の記録：[`CHANGELOG.md`](CHANGELOG.md)
+
+**`dist/` も Git で管理しています。** 生成は決定的（同じ SANA OS のコミットと同じ元ファイルからは、毎回まったく同じファイルができる）なので、`dist/` の差分がそのまま「AI に渡す文章がどう変わったか」になります。SANA OS の変更を取り込んだときや、ペルソナやスキルを直したときは、その差分を見て確かめてください。
 
 ---
 
@@ -15,6 +18,7 @@ Powered by SANA OS — https://sana-os.org
 
 ```
 sana-hermes/
+├─ upstream/sana-os/        SANA OS 本体（サブモジュール。特定のコミットに固定）
 ├─ build.py                 生成スクリプト（Python 3.9+、標準ライブラリのみ）
 ├─ sana-hermes.json         プロファイルとスキルの定義
 ├─ overlays/
@@ -27,7 +31,7 @@ sana-hermes/
 └─ dist/
    ├─ mode-skills/          標準（フレームワークをスキルとして必要時に読む）
    └─ mode-inline/          比較用（GPTs と同じく全フレームワークを SOUL.md に展開）
-      ├─ MANIFEST.json      生成元コミット、各ファイルのハッシュ、文字数、検査結果
+      ├─ MANIFEST.json      生成元コミット、各ファイルのハッシュ、文字数
       └─ profiles/<名前>/SOUL.md, skills/sana-os/<スキル>/SKILL.md
 ```
 
@@ -142,8 +146,12 @@ hermes profile create sana-hub --description "SANA OS hub: premise alignment, pr
 
 ### 2. 予行演習してから入れる
 
+初回は、サブモジュールごと取得します（`dist/` は生成済みなので、入れるだけなら Python は不要です）。
+
 ```powershell
-cd <このフォルダ>
+cd D:\GitHub
+git clone --recurse-submodules https://github.com/sana-os/sana-hermes.git
+cd sana-hermes
 .\install.ps1 -Name sana-hub -WhatIf
 .\install.ps1 -Name sana-hub
 ```
@@ -234,13 +242,21 @@ auxiliary:
 
 ## 更新のしかた
 
+**SANA OS の変更を取り込む**
+
 ```bash
-git -C ../sana-os pull
-python3 build.py --sana-os ../sana-os                  # mode-skills
-python3 build.py --sana-os ../sana-os --mode inline    # mode-inline
-# Hermes の注入検査も通す場合
-python3 build.py --sana-os ../sana-os --scan ../hermes-agent/tools/threat_patterns.py
+git -C upstream/sana-os fetch
+git -C upstream/sana-os checkout <取り込むコミット>   # 例：origin/main
+python3 build.py
+python3 build.py --mode inline
+git diff --stat dist/                                  # AI に渡す文章の変化を確認
+git add upstream/sana-os dist
+git commit                                             # 何を取り込み、何が変わったかを書く
 ```
+
+**ペルソナやスキルを直す**：`overlays/` または `sana-hermes.json` を編集し、同じく作り直して `dist/` と一緒にコミットします。
+
+Hermes の注入検査も手元で通す場合は、`hermes-agent` を取得して `--scan <hermes-agent>/tools/threat_patterns.py` を付けてください。GitHub では、push のたびに同じ検査と「`dist/` が元ファイルから再現できるか」の確認が自動で走ります（`.github/workflows/build.yml`）。
 
 `MANIFEST.json` に生成元のコミットと各ファイルのハッシュが残るので、どの版の SANA OS から作ったかを後からたどれます。プロファイルやスキルの組み合わせを変えるときは `sana-hermes.json` を、ハブの人格を変えるときは `overlays/Persona_Hub.custom.md` を編集して作り直してください。
 

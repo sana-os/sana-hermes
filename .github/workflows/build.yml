@@ -1,0 +1,52 @@
+# Rebuild dist/ from the pinned SANA OS commit and check two things:
+# 1. Hermes' own prompt-injection scanner finds nothing in any SOUL.md.
+#    Why: a SOUL.md installed as part of a shared profile is blocked, not
+#    just warned about, when it matches.
+# 2. The committed dist/ is exactly what the sources produce.
+#    Why: dist/ is what the model receives; a hand edit there, or a source
+#    change committed without rebuilding, would make the diff history lie.
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      # build.py names, for each framework skill, the last commit that changed
+      # its source file. That needs the submodule's history, not a shallow copy.
+      - name: Full history for the SANA OS submodule
+        run: git -C upstream/sana-os fetch --unshallow || true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch the pinned Hermes scanner
+        run: |
+          repo=$(python3 -c "import json;print(json.load(open('sana-hermes.json'))['hermes_scan']['repository'])")
+          ref=$(python3 -c "import json;print(json.load(open('sana-hermes.json'))['hermes_scan']['commit'])")
+          path=$(python3 -c "import json;print(json.load(open('sana-hermes.json'))['hermes_scan']['file'])")
+          raw=${repo/github.com/raw.githubusercontent.com}
+          curl -fsSL "$raw/$ref/$path" -o "$RUNNER_TEMP/threat_patterns.py"
+
+      - name: Build both modes with the scan
+        run: |
+          python3 build.py --scan "$RUNNER_TEMP/threat_patterns.py"
+          python3 build.py --mode inline --scan "$RUNNER_TEMP/threat_patterns.py"
+
+      - name: Committed dist/ matches the sources
+        run: |
+          git status --porcelain -- dist
+          test -z "$(git status --porcelain -- dist)" || {
+            echo "::error::dist/ differs from what build.py produces. Rebuild and commit dist/."
+            git diff --stat -- dist
+            exit 1
+          }

@@ -1,7 +1,6 @@
 ---
 name: sana-gmm
 description: "SANA GMM — pressure balance across Layers A/B/C. Where structural pressure accumulates across Layers A/B/C — layer gaps, stress, bottleneck layer. Load when diagnosing the balance of survival, meaning and institutions in a society, organization or era (層のバランス, 構造的ストレス, GMM)."
-version: "0.3.0"
 metadata:
   hermes:
     category: sana-os
@@ -18,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`frameworks/GMM.md` from https://github.com/sana-os/sana-os at commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`frameworks/GMM.md` from https://github.com/sana-os/sana-os, as last changed in commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---
