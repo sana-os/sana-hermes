@@ -30,11 +30,14 @@ sana-hermes/
 │  ├─ skills/                   このパッケージで書いた手順（レビュー3つと物語の考察。SANA OS の一部ではない）
 │  └─ hermes_runtime_notes.md   各 SOUL.md の末尾に付く Hermes 用の注記
 ├─ install.ps1              Windows 用インストーラ
+├─ check_release.py         版のタグを付ける前の確認
+├─ LICENSE, LICENSING.md, LICENSES/   ライセンス（下の「ライセンス」）
 └─ dist/
    ├─ mode-skills/          標準（フレームワークをスキルとして必要時に読む）
    └─ mode-inline/          比較用（GPTs と同じく全フレームワークを SOUL.md に展開）
-      ├─ MANIFEST.json      生成元コミット、各ファイルのハッシュ、文字数
-      └─ profiles/<名前>/SOUL.md, skills/sana-os/<スキル>/SKILL.md
+      ├─ MANIFEST.json      生成元コミット、入力と書き出した全ファイルのハッシュ、文字数
+      └─ profiles/<名前>/SOUL.md, skills/sana-os/<スキル>/SKILL.md,
+                         NOTICE.md, LICENSES/SANA-OS-1.0.md（フォルダ単体で渡すときの表示とライセンス）
 ```
 
 ### プロファイル
@@ -161,6 +164,8 @@ cd sana-hermes
 ```
 
 - 既存の `SOUL.md` と `skills\sana-os\` は、`<プロファイル>\sana-os-backups\<日時>\` に退避してから入れ替えます。
+- 先に、指定したすべてのプロファイルについて、配布物と Hermes のプロファイルフォルダがそろっているかを確かめます。一つでも欠けていれば、何も変えずに終わります。入れ替えの途中で失敗したプロファイルは、元の状態に戻します。
+- 終了コード：`0` 入れ終わって準備もできている／`2` 入れたが NOT READY（`config.yaml` の設定不足）がある／`1` 失敗した（失敗したプロファイルは元に戻してある）。
 - **`sana-history` には、今の GPTs から移した SOUL.md が入っているはずです。** 入れると置き換わります（退避はされます）。比べたい場合は、先に別名のプロファイルで試すほうが安全です。その場合は `sana-hermes.json` にプロファイルを追加して `build.py` を実行し直してください。
 - `config.yaml`、記憶、セッション、他のスキルには触れません。
 - 実行ポリシーで止められたら、そのウィンドウだけ `Set-ExecutionPolicy -Scope Process Bypass` を実行してください。
@@ -238,8 +243,13 @@ auxiliary:
 
 ## 確認したこと（ビルド時）
 
-- Core_Principle.md：全プロファイルの SOUL.md にバイト単位で同一
-- Hermes 自身のプロンプトインジェクション検査（`tools/threat_patterns.py`、context スコープ）：全 SOUL.md で検出なし。Core_Principle 4章の「jailbreak ではない」という一節も引っかかりませんでした。なお、利用者自身の SOUL.md は検出されても警告だけで読み込まれますが、`hermes profile install` で配布物として入れた場合は**読み込みが止められます**。将来プロファイルを配布するときは、この検査を通しておく必要があります
+- Core_Principle.md：書き出した各 SOUL.md のバイト列に、`core/Core_Principle.md` のバイト列（前後の改行を除く）がそのまま含まれる
+- Hermes 自身のプロンプトインジェクション検査（`tools/threat_patterns.py`、context スコープ）を、二通りに使います。どちらかで一致すればビルドエラーです（`--scan` を付けたときと CI）。
+  - **Hermes が SOUL.md を読み込むときと同じ呼び方**：Hermes はこの検査に渡す文章を先頭 65,536 文字（`MAX_SCAN_CHARS`）で切ります。mode-skills の SOUL.md（約 29,000 文字まで）は全体が入りますが、mode-inline の hub・history・review・friend（66,000〜75,000 文字）は、末尾が Hermes 自身の検査の範囲外です
+  - **全文**：SOUL.md と、すべての SKILL.md を、重なりのある区間に分けて検査します。Hermes は `skill_view` で読んだスキルを検査しないので、これはこのパッケージ独自の検査です
+  - どの範囲を検査したかは、`--report` で JSON に書き出せます（CI では成果物として残します）。`dist/` には入れません。実行ごとの記録で、決定的な生成物ではないからです
+
+  利用者自身の SOUL.md は検出されても警告だけで読み込まれますが、`hermes profile install` で配布物として入れた場合は**読み込みが止められます**。Core_Principle 4章の「jailbreak ではない」という一節は、どちらの検査でも引っかかっていません
 - スキル名：Hermes の命名規則（小文字・数字・`-`・`_`）に合致
 - スキル本文：最大 14,000 文字弱で、Hermes の目安（約 24,000 文字）以内
 
@@ -269,9 +279,18 @@ git commit                                             # 何を取り込み、�
 
 **ペルソナやスキルを直す**：`overlays/` または `sana-hermes.json` を編集し、同じく作り直して `dist/` と一緒にコミットします。
 
-Hermes の注入検査も手元で通す場合は、`hermes-agent` を取得して `--scan <hermes-agent>/tools/threat_patterns.py` を付けてください。GitHub では、push のたびに同じ検査と「`dist/` が元ファイルから再現できるか」の確認が自動で走ります（`.github/workflows/build.yml`）。
+Hermes の注入検査も手元で通す場合は、`hermes-agent` を取得して `--scan <hermes-agent>/tools/threat_patterns.py` を付けてください（検査範囲の記録が要るなら `--report scan.json` も）。`build.py` は、入力と出力先を先に確かめ、一時フォルダに作って検査してから、成功したときだけ `dist/` を入れ替えます。失敗しても、前の `dist/` はそのまま残ります。GitHub では、push のたびに同じ検査と「`dist/` が元ファイルから再現できるか」の確認が自動で走ります（`.github/workflows/build.yml`）。
 
-`MANIFEST.json` に生成元のコミットと各ファイルのハッシュが残るので、どの版の SANA OS から作ったかを後からたどれます。プロファイルやスキルの組み合わせを変えるときは `sana-hermes.json` を、ハブの人格を変えるときは `overlays/Persona_Hub.custom.md` を編集して作り直してください。
+`MANIFEST.json` には、生成元の SANA OS のコミット、入力（SANA OS の原文、`overlays/`、`sana-hermes.json`、`build.py`）のハッシュ、書き出したすべてのファイルのハッシュが残るので、何から何ができたかを後からたどれます。
+
+**版を出す**：PR を GitHub で merge し、`git switch main` → `git pull` のあと、タグを付ける前に確かめます。
+
+```powershell
+python check_release.py v0.5.2      # 版番号・ライセンス・main の先頭の merge コミットか、を確認
+git tag -a v0.5.2 -m "..."
+git push origin v0.5.2              # CI でも同じ確認が走る
+```
+プロファイルやスキルの組み合わせを変えるときは `sana-hermes.json` を、ハブの人格を変えるときは `overlays/Persona_Hub.custom.md` を編集して作り直してください。
 
 ## 権限と委任（Hermes で確かめたこと）
 
@@ -280,7 +299,10 @@ Hermes の注入検査も手元で通す場合は、`hermes-agent` を取得し�
 - **委任先**（`delegate_task`）は、SOUL.md も記憶も受け取りません（`skip_context_files=True`, `skip_memory=True`）。受け取るのは、委任のときに渡す目的と文脈だけです。
 - **委任先のツール**は、親と同じツールから `delegate_task`、`clarify`、`memory`、`send_message`、`cronjob_manage` を除いたものです。モデルが委任のときにツールを狭める引数はありません。
 - **プロファイルごとに**、`config.yaml` の `agent.disabled_toolsets` でツール群を外せます。外したものは委任先からも外れます。
-- **ファイルの読み取りと書き込みは、同じツール群（`file`）**にまとまっています。ツール群の設定だけでは「読めるが書けない」にはできません。読み取り専用にするなら、Git や OS の側で分けます（例：レビュー用には push の資格情報を持たない別の clone を読ませる）。
+- **ファイルの読み取りと書き込みは、同じツール群（`file`）**にまとまっています。ツール群の設定だけでは「読めるが書けない」にはできません。
+- 「読み取り専用」には二つの意味があり、別々に確かめます。
+  - **リモートへ書けない**：push の資格情報を持たない clone を使えば、GitHub には書けません。ただし、それだけでは手元のファイルの書き換えは防げません
+  - **手元のファイルを書き換えられない**：OS のファイル権限（読み取り専用の属性、別ユーザーでの実行、読み取り専用のマウントなど）で確かめます
 
 どのプロファイルにどの権限を持たせるかは、まだ決めていません。
 
@@ -310,4 +332,3 @@ Core_Specification §7.1 の「すべての状態はセッション内に限る�
 - **レビュー結果の受け渡しの仕組み**：今は、作者のプロファイルが出力をファイルに書き出し、それを sana-review に読ませる手作業を想定しています。受け渡しの形が固まってから自動化してください。
 - **権限の割り当て**（上の「権限と委任」）
 - **対話の状態をセッションをまたいで持ち越すか**（上の「永続メモリに入るもの」）
-- **プロファイル単体で配るときのライセンス同梱**：今は `dist/` の各プロファイルにライセンス文書を入れていません。単体で配るときの扱いは `LICENSING.md` に書いてあります
