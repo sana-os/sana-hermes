@@ -15,9 +15,9 @@ Why: the question that matters after an update is whether the model now receives
 
 Versions before 0.4.0 have no tags: they were handed over as files and not kept (see 0.1.0–0.3.0 below).
 
-## Unreleased
+## 0.5.2 — 2026-10-19
 
-Changes from the second review (ChatGPT SANA, 2026-10-19). No SOUL.md or SKILL.md text changes.
+Changes from the second review (ChatGPT SANA, 2026-10-19). A patch version: no SOUL.md or SKILL.md text changes; installed profiles do not need to be reinstalled. The review's points on T7 and on the order of the safety rules change instructions and are left to a separate pull request.
 
 - **`check_release.py`: a tag must match the version, the licence files and main.** Run it before pushing a tag; CI runs it on every tag push. It checks that `sana-hermes.json`, both `MANIFEST.json` and the CHANGELOG carry the tag's version, that the licence files are committed, and that HEAD is the merge commit at the tip of `origin/main`.
   Observation: `v0.5.1` was first pushed (2026-10-19, about 01:30 JST) on `1d7c43f`, the 0.5.0 merge commit, because the local main had not been pulled after the licence pull request was merged. Through that tag, `package_version` read 0.5.0 and `LICENSE` did not exist. CI passed, because that commit was consistent in itself. The tag was deleted and pushed again on `35a8f72` about 20 minutes later; the release was re-published on the new tag. The check run against the first tag reports seven problems; against the current one, none.
