@@ -5,11 +5,23 @@
 .DESCRIPTION
   Copies dist\mode-<Mode>\profiles\<Profile>\ into <HermesHome>\profiles\<Profile>\.
   Files are copied byte-for-byte (UTF-8 without BOM, as built).
-  An existing SOUL.md and skills\sana-os folder are first moved to
-  <profile>\sana-os-backups\<timestamp>\ so nothing is lost.
+
+  1. Preflight, before anything is changed: the build output, MANIFEST.json and every
+     requested profile (source files and Hermes profile folder) must exist, and each
+     SOUL.md must match the hash in MANIFEST.json. If anything is missing, nothing is
+     installed.
+  2. For each profile: the new files are copied into a staging folder inside the profile
+     and verified; the existing SOUL.md and skills\sana-os are moved to
+     <profile>\sana-os-backups\<timestamp>\; the staged files are moved into place.
+     If any step fails, the profile is restored to what it was.
   config.yaml, memories, sessions and other skills are not touched.
   config.yaml is read, not changed: if context_file_max_chars is missing or
-  below the SOUL.md length, the profile is reported as not ready.
+  below the SOUL.md length, the profile is reported as NOT READY.
+
+  Exit code:
+    0  installed (or, with -WhatIf, would install) and ready
+    2  installed, but at least one profile is NOT READY (see the warnings)
+    1  preflight failed or an installation failed; failed profiles were restored
 
 .EXAMPLE
   .\install.ps1 -Name sana-hub -WhatIf
@@ -32,48 +44,122 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$distRoot = Join-Path $PSScriptRoot "dist\mode-$Mode\profiles"
+$distMode = Join-Path $PSScriptRoot "dist\mode-$Mode"
+$distRoot = Join-Path $distMode 'profiles'
+# Test hook: set SANA_INSTALL_TEST_FAIL to 'after-backup' or 'after-soul' to make the
+# installation of every profile fail at that point, so the restore can be tested.
+$testFail = $env:SANA_INSTALL_TEST_FAIL
 
-if (-not (Test-Path -LiteralPath $distRoot)) {
-    throw "Build output not found: $distRoot  (run: python build.py --mode $Mode)"
+function Get-Sha256([string] $path) {
+    (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
 }
-$manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot "dist\mode-$Mode\MANIFEST.json") -Raw -Encoding UTF8 | ConvertFrom-Json
-$notReady = @()
 
+# ---- 1. Preflight: nothing is changed until every requested profile can be installed.
+$errors = @()
+$manifest = $null
+$manifestPath = Join-Path $distMode 'MANIFEST.json'
+if (-not (Test-Path -LiteralPath $manifestPath)) {
+    $errors += "Build output not found: $manifestPath  (run: python build.py --mode $Mode)"
+} else {
+    $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($manifest.mode -ne $Mode) { $errors += "$manifestPath is for mode '$($manifest.mode)', not '$Mode'" }
+    foreach ($p in $Name) {
+        $src = Join-Path $distRoot $p
+        $dst = Join-Path $HermesHome "profiles\$p"
+        $entry = $manifest.profiles.$p
+        if ($null -eq $entry) { $errors += "${p}: not in $manifestPath"; continue }
+        if (-not (Test-Path -LiteralPath (Join-Path $src 'SOUL.md'))) { $errors += "${p}: $src\SOUL.md not found"; continue }
+        if (-not (Test-Path -LiteralPath (Join-Path $src 'skills\sana-os'))) { $errors += "${p}: $src\skills\sana-os not found"; continue }
+        if ((Get-Sha256 (Join-Path $src 'SOUL.md')) -ne $entry.soul_sha256) {
+            $errors += "${p}: $src\SOUL.md does not match MANIFEST.json (rebuild, or check out dist/ again)"
+        }
+        if (-not (Test-Path -LiteralPath $dst)) {
+            $errors += "${p}: Hermes profile folder not found: $dst  (create it first: hermes profile create $p)"
+        }
+    }
+}
+if ($errors.Count -gt 0) {
+    Write-Host 'Preflight failed. Nothing was changed.'
+    foreach ($e in $errors) { Write-Warning $e }
+    exit 1
+}
+
+# ---- 2. Install each profile, restoring it if any step fails.
+function Remove-EmptyBackup([string] $backup) {
+    # A backup folder with nothing in it (first install, or a restore) is not kept.
+    foreach ($d in @($backup, (Split-Path -Parent $backup))) {
+        if ((Test-Path -LiteralPath $d) -and -not (Get-ChildItem -LiteralPath $d -Force)) {
+            Remove-Item -LiteralPath $d -Force
+        }
+    }
+}
+
+function Install-SanaProfile([string] $p) {
+    $src = Join-Path $distRoot $p
+    $dst = Join-Path $HermesHome "profiles\$p"
+    $soulDst = Join-Path $dst 'SOUL.md'
+    $skillsDst = Join-Path $dst 'skills\sana-os'
+    $backup = Join-Path $dst "sana-os-backups\$stamp"
+    $stage = Join-Path $dst ".sana-os-staging-$stamp"
+    $done = @{ soulMoved = $false; skillsMoved = $false; soulPlaced = $false; skillsPlaced = $false }
+
+    try {
+        # Stage and verify the new files inside the profile folder (same volume, so the
+        # moves below are renames).
+        New-Item -ItemType Directory -Force -Path $stage | Out-Null
+        Copy-Item -LiteralPath (Join-Path $src 'SOUL.md') -Destination (Join-Path $stage 'SOUL.md')
+        Copy-Item -LiteralPath (Join-Path $src 'skills\sana-os') -Destination (Join-Path $stage 'skills-sana-os') -Recurse
+        if ((Get-Sha256 (Join-Path $stage 'SOUL.md')) -ne $manifest.profiles.$p.soul_sha256) {
+            throw 'the staged SOUL.md does not match MANIFEST.json'
+        }
+        $want = @(Get-ChildItem -LiteralPath (Join-Path $src 'skills\sana-os') -Recurse -File).Count
+        $got = @(Get-ChildItem -LiteralPath (Join-Path $stage 'skills-sana-os') -Recurse -File).Count
+        if ($want -ne $got) { throw "staged $got skill files, expected $want" }
+
+        # Move the current files to the backup folder.
+        New-Item -ItemType Directory -Force -Path $backup | Out-Null
+        if (Test-Path -LiteralPath $soulDst) {
+            Move-Item -LiteralPath $soulDst -Destination (Join-Path $backup 'SOUL.md'); $done.soulMoved = $true
+        }
+        if (Test-Path -LiteralPath $skillsDst) {
+            Move-Item -LiteralPath $skillsDst -Destination (Join-Path $backup 'skills-sana-os'); $done.skillsMoved = $true
+        }
+        if ($testFail -eq 'after-backup') { throw 'test failure after backup' }
+
+        # Put the staged files in place.
+        Move-Item -LiteralPath (Join-Path $stage 'SOUL.md') -Destination $soulDst; $done.soulPlaced = $true
+        if ($testFail -eq 'after-soul') { throw 'test failure after SOUL.md was placed' }
+        New-Item -ItemType Directory -Force -Path (Join-Path $dst 'skills') | Out-Null
+        Move-Item -LiteralPath (Join-Path $stage 'skills-sana-os') -Destination $skillsDst; $done.skillsPlaced = $true
+        Remove-Item -LiteralPath $stage -Recurse -Force
+        Remove-EmptyBackup $backup
+        return $true
+    } catch {
+        Write-Warning "${p}: installation failed: $($_.Exception.Message). Restoring the previous files."
+        try {
+            if ($done.skillsPlaced) { Remove-Item -LiteralPath $skillsDst -Recurse -Force }
+            if ($done.soulPlaced) { Remove-Item -LiteralPath $soulDst -Force }
+            if ($done.skillsMoved) { Move-Item -LiteralPath (Join-Path $backup 'skills-sana-os') -Destination $skillsDst }
+            if ($done.soulMoved) { Move-Item -LiteralPath (Join-Path $backup 'SOUL.md') -Destination $soulDst }
+            Remove-EmptyBackup $backup
+            if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
+            Write-Warning "${p}: restored."
+        } catch {
+            Write-Warning "${p}: RESTORE FAILED: $($_.Exception.Message). The previous files are in $backup"
+        }
+        return $false
+    }
+}
+
+$failed = @()
+$notReady = @()
 foreach ($p in $Name) {
     $src = Join-Path $distRoot $p
     $dst = Join-Path $HermesHome "profiles\$p"
     Write-Host "== $p  ($Mode)"
 
-    if (-not (Test-Path -LiteralPath $dst)) {
-        Write-Warning "Profile folder not found: $dst"
-        Write-Warning "Create it first:  hermes profile create $p   (then run this script again)"
-        continue
-    }
-
-    $backup = Join-Path $dst "sana-os-backups\$stamp"
-    $soulDst = Join-Path $dst 'SOUL.md'
-    $skillsDst = Join-Path $dst 'skills\sana-os'
-
-    if (Test-Path -LiteralPath $soulDst) {
-        if ($PSCmdlet.ShouldProcess($soulDst, "Back up to $backup")) {
-            New-Item -ItemType Directory -Force -Path $backup | Out-Null
-            Copy-Item -LiteralPath $soulDst -Destination (Join-Path $backup 'SOUL.md')
-        }
-    }
-    if (Test-Path -LiteralPath $skillsDst) {
-        if ($PSCmdlet.ShouldProcess($skillsDst, "Move to $backup\skills-sana-os")) {
-            New-Item -ItemType Directory -Force -Path $backup | Out-Null
-            Move-Item -LiteralPath $skillsDst -Destination (Join-Path $backup 'skills-sana-os')
-        }
-    }
-
-    if ($PSCmdlet.ShouldProcess($soulDst, 'Install SOUL.md')) {
-        Copy-Item -LiteralPath (Join-Path $src 'SOUL.md') -Destination $soulDst -Force
-    }
-    if ($PSCmdlet.ShouldProcess($skillsDst, 'Install SANA OS skills')) {
-        New-Item -ItemType Directory -Force -Path (Join-Path $dst 'skills') | Out-Null
-        Copy-Item -LiteralPath (Join-Path $src 'skills\sana-os') -Destination $skillsDst -Recurse -Force
+    if ($PSCmdlet.ShouldProcess($dst, 'Install SOUL.md and skills\sana-os (moving the current ones to sana-os-backups)')) {
+        if (-not (Install-SanaProfile $p)) { $failed += $p; continue }
     }
 
     # Character count as Hermes counts it (Python len), recorded by build.py.
@@ -106,7 +192,13 @@ foreach ($p in $Name) {
 }
 
 Write-Host ''
+if ($failed.Count -gt 0) {
+    Write-Warning "Failed and restored: $($failed -join ', ')."
+    exit 1
+}
 if ($notReady.Count -gt 0) {
     Write-Warning "Installed, but not ready: $($notReady -join ', '). Fix config.yaml as above, then start a new session."
+    exit 2
 }
 Write-Host 'Done. Start a NEW Hermes session for SOUL.md changes to take effect; run /context there and check that SOUL.md is loaded, not truncated.'
+exit 0
