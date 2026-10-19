@@ -7,7 +7,7 @@ This repository contains files under **different terms**. It is not "all MIT". W
 | `build.py`, `install.ps1`, `.github/`, `.gitattributes`, `.gitignore` | [MIT License](LICENSE) | Tools that build and install the profiles |
 | `README.md`, `CHANGELOG.md`, `LICENSING.md` | [MIT License](LICENSE), except passages quoted from SANA OS materials, which keep the SANA OS License | Documentation of the tools and of this package |
 | `overlays/` (personas, procedures, runtime notes) and `sana-hermes.json` (profile and lens definitions) | [SANA OS License v1.0](LICENSES/SANA-OS-1.0.md) | Texts that define how SANA behaves, written for this package as an adaptation of SANA OS |
-| `dist/` (`SOUL.md`, `SKILL.md`, `MANIFEST.json`) | [SANA OS License v1.0](LICENSES/SANA-OS-1.0.md) | Built from SANA OS materials and `overlays/`. Being generated does not make them MIT |
+| `dist/` (`SOUL.md`, `SKILL.md`, `NOTICE.md`, `MANIFEST.json`; each profile also carries a copy of the licence) | [SANA OS License v1.0](LICENSES/SANA-OS-1.0.md) | Built from SANA OS materials and `overlays/`. Being generated does not make them MIT |
 | `upstream/sana-os` | The license in that repository (`LICENSE.md` of the pinned commit) | A submodule: a pointer to `sana-os/sana-os`, not a copy |
 
 `LICENSES/SANA-OS-1.0.md` is `LICENSE.md` from sana-os commit `95ee190`, the commit `upstream/sana-os` is pinned to, copied unchanged.
@@ -32,7 +32,7 @@ Using or distributing the SANA OS parts requires the attribution in the SANA OS 
 
 ## Distributing a profile on its own
 
-If you copy a profile folder out of `dist/` and pass it on without this repository, include this file and `LICENSES/SANA-OS-1.0.md` with it, and give the attribution above where users can see it. The build does not yet put these files into each profile folder.
+Each profile folder in `dist/` carries `NOTICE.md` (attribution, derivative-work notice, source commit) and `LICENSES/SANA-OS-1.0.md`, so a folder passed on without this repository keeps its terms. Keep both with it, and give the attribution above where users can see it.
 
 ## Hermes Agent
 

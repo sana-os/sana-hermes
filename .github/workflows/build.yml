@@ -71,10 +71,20 @@ jobs:
           sparse-checkout-cone-mode: false
           persist-credentials: false
 
+      # The scan report says how much of each file each scan covered. It is a
+      # record of this run, so it is kept as a CI artifact, not in dist/.
       - name: Build both modes with the scan
         run: |
-          python3 build.py --scan ".hermes-scan/${{ steps.scan.outputs.file }}"
-          python3 build.py --mode inline --scan ".hermes-scan/${{ steps.scan.outputs.file }}"
+          python3 build.py --scan ".hermes-scan/${{ steps.scan.outputs.file }}" --report "$RUNNER_TEMP/scan-skills.json"
+          python3 build.py --mode inline --scan ".hermes-scan/${{ steps.scan.outputs.file }}" --report "$RUNNER_TEMP/scan-inline.json"
+
+      - name: Keep the scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-report
+          path: ${{ runner.temp }}/scan-*.json
+          if-no-files-found: ignore
 
       - name: Committed dist/ matches the sources
         run: |

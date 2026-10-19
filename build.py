@@ -7,11 +7,11 @@ derived projection and can be regenerated at any time:
     python3 build.py                                  # skills mode, from upstream/sana-os (submodule)
     python3 build.py --mode inline                    # GPTs-equivalent SOUL.md
     python3 build.py --sana-os ../sana-os             # build from another checkout
-    python3 build.py --scan path/to/hermes-agent/tools/threat_patterns.py
+    python3 build.py --scan path/to/hermes-agent/tools/threat_patterns.py --report scan.json
 
 The output is deterministic: the same SANA OS commit and the same sources give
-byte-identical files, so dist/ can be committed and its diff shows exactly what
-changes in the text the model receives.
+byte-identical files, so dist/ can be committed and its diff shows exactly how the
+instructions this package distributes change.
 
 Modes
   skills  SOUL.md = Core + persona + Hermes notes; frameworks become on-demand skills.
@@ -20,11 +20,20 @@ Modes
 
 Checks performed on every build
   * the SANA OS checkout is a full git clone, so every recorded source commit is real
-  * core/Core_Principle.md appears byte-for-byte unchanged in every SOUL.md
+  * the bytes of core/Core_Principle.md (without leading/trailing newlines) appear in every
+    written SOUL.md
   * SOUL.md length against Hermes' context-file cap (20,000 chars when the
     model's context window is unknown; see README for context_file_max_chars)
   * skill names match Hermes' pattern; SKILL.md body length under the linter's ~24k advisory
-  * optional: Hermes' own prompt-injection scanner (--scan)
+  * optional, with --scan: Hermes' own prompt-injection scanner, in two ways
+      - as Hermes runs it when it loads SOUL.md: one call, which looks only at the first
+        MAX_SCAN_CHARS (65,536 at the pinned commit)
+      - over the whole text: SOUL.md and every SKILL.md, in overlapping windows. Hermes does not
+        scan skills it loads with skill_view; this is this package's own check.
+    A match in either is a build error. --report writes the coverage per file (outside dist/).
+Written per profile: SOUL.md, skills/, NOTICE.md and LICENSES/SANA-OS-1.0.md (for a profile
+folder passed on without this repository). MANIFEST.json records the hashes of the inputs and
+of every file written.
 """
 from __future__ import annotations
 
@@ -159,13 +168,50 @@ def join_parts(parts: list[str]) -> str:
     return out + "\n"
 
 
-def load_scanner(path: str | None):
-    if not path:
-        return None
-    spec = importlib.util.spec_from_file_location("hermes_threat_patterns", path)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)  # type: ignore[union-attr]
-    return mod.scan_for_threats
+SCAN_OVERLAP = 4_096   # windows overlap so a pattern across a window edge is still seen whole
+
+
+class Scanner:
+    """Hermes' scan_for_threats, called the way Hermes calls it and over the whole text."""
+
+    def __init__(self, path: str):
+        spec = importlib.util.spec_from_file_location("hermes_threat_patterns", path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)  # type: ignore[union-attr]
+        self.scan = mod.scan_for_threats
+        self.limit = getattr(mod, "MAX_SCAN_CHARS", None)  # Hermes truncates its input to this
+
+    def as_hermes_loads(self, text: str) -> dict:
+        covered = len(text) if self.limit is None else min(len(text), self.limit)
+        return {"covered_chars": covered, "of_chars": len(text), "findings": list(self.scan(text, scope="context"))}
+
+    def whole(self, text: str) -> dict:
+        if self.limit is None or len(text) <= self.limit:
+            starts = [0]
+        else:
+            starts = list(range(0, len(text) - SCAN_OVERLAP, self.limit - SCAN_OVERLAP))
+        findings: list[str] = []
+        for i in starts:
+            for f in self.scan(text[i:i + (self.limit or len(text))], scope="context"):
+                if f not in findings:
+                    findings.append(f)
+        return {"covered_chars": len(text), "windows": len(starts), "findings": findings}
+
+
+def notice(pname: str, commit: str) -> str:
+    """For a profile folder passed on without this repository (LICENSING.md, "Distributing a profile")."""
+    return (f"# NOTICE — {pname}\n\n"
+            "Powered by SANA OS — https://sana-os.org\n\n"
+            "This folder (`SOUL.md`, `skills/`) is a derivative work of SANA OS, built by sana-hermes "
+            f"(https://github.com/sana-os/sana-hermes) from SANA OS commit `{commit[:12]}`.\n\n"
+            "- SANA OS materials are included unchanged. `core/Core_Principle.md` is included byte-for-byte "
+            "and may not be modified.\n"
+            "- The personas, procedures and runtime notes written for sana-hermes are adaptations of SANA OS.\n\n"
+            "Licence: SANA OS License v1.0, in `LICENSES/SANA-OS-1.0.md` in this folder.\n\n"
+            "When you deploy this profile, show \"Powered by SANA OS\" and https://sana-os.org where its users "
+            "can see them. The attribution line inside `SOUL.md` is read by the model; it does not replace "
+            "that notice. If you change these files and pass them on, say that they were changed and that the "
+            "result is a derivative work.\n")
 
 
 def write(path: Path, text: str) -> None:
@@ -237,6 +283,8 @@ def main() -> int:
     ap.add_argument("--mode", choices=["skills", "inline"], default="skills")
     ap.add_argument("--out", default=None, help="output dir (default: dist/mode-<mode>)")
     ap.add_argument("--scan", default=None, help="path to hermes-agent/tools/threat_patterns.py (optional)")
+    ap.add_argument("--report", default=None,
+                    help="write the scan coverage per file to this JSON file (kept out of dist/: it describes a run)")
     args = ap.parse_args()
 
     src = Path(args.sana_os).resolve()
@@ -265,13 +313,16 @@ def main() -> int:
         problems.append(f"scanner not found: {args.scan}")
     if problems:
         return report(problems, untouched=out)
-    scanner = load_scanner(args.scan)
+    scanner = Scanner(args.scan) if args.scan else None
 
     # 2. Build into a temporary directory next to the output, check it, then swap.
     out.parent.mkdir(parents=True, exist_ok=True)
     tmp = Path(tempfile.mkdtemp(prefix=f".{out.name}.build-", dir=out.parent))
     try:
-        problems = build(src, cfg, args.mode, tmp, scanner, commit, commit_date, out)
+        problems, scan_report = build(src, cfg, args.mode, tmp, scanner, commit, commit_date, out)
+        if args.report:
+            write(Path(args.report), json.dumps(scan_report, ensure_ascii=False, indent=2) + "\n")
+            print(f"Scan report: {args.report}")
         if problems:
             return report(problems, untouched=out)
         replace_dir(tmp, out)
@@ -291,15 +342,23 @@ def report(problems: list[str], untouched: Path) -> int:
 
 
 def build(src: Path, cfg: dict, mode: str, out: Path, scanner, commit: str, commit_date: str,
-          final: Path) -> list[str]:
+          final: Path) -> tuple[list[str], dict]:
     version = cfg["package_version"]
     category = cfg["skill_category"]
     core_bytes = (src / "core" / "Core_Principle.md").read_bytes().strip(b"\n")
     problems: list[str] = []
     manifest: dict = {
         "package_version": version, "mode": mode,
-        "sana_os_commit": commit, "sana_os_commit_date": commit_date, "sources": {}, "profiles": {},
+        "sana_os_commit": commit, "sana_os_commit_date": commit_date,
+        "inputs": {}, "sources": {}, "profiles": {}, "files": {},
     }
+    # Inputs of this repository that shape the output (sources from SANA OS are under "sources").
+    _, local_files = required_inputs(cfg)
+    for path in [HERE / "build.py", HERE / "sana-hermes.json", HERE / "LICENSES" / "SANA-OS-1.0.md"] + local_files:
+        manifest["inputs"][path.relative_to(HERE).as_posix()] = sha256(path.read_bytes())
+    licence = (HERE / "LICENSES" / "SANA-OS-1.0.md").read_bytes()
+    scan_report: dict = {"mode": mode, "scanner": None if scanner is None else {
+        "max_scan_chars": scanner.limit, "window_overlap": SCAN_OVERLAP}, "files": {}}
 
     # Skills (shared definitions, copied into each profile that uses them)
     built_skills: dict[str, str] = {}
@@ -313,6 +372,11 @@ def build(src: Path, cfg: dict, mode: str, out: Path, scanner, commit: str, comm
         if len(text) > SKILL_BODY_ADVISORY:
             problems.append(f"{name}: SKILL.md {len(text)} chars exceeds Hermes linter advisory {SKILL_BODY_ADVISORY}")
         built_skills[name] = text
+        if scanner:
+            whole = scanner.whole(text)
+            scan_report["files"][f"skills/{name}/SKILL.md"] = {"whole": whole}
+            if whole["findings"]:
+                problems.append(f"{name}: SKILL.md matched the Hermes scanner {whole['findings']}")
         if "overlay" in spec:
             manifest["sources"][spec["overlay"]] = sha256((HERE / spec["overlay"]).read_text(encoding="utf-8"))
         else:
@@ -343,23 +407,36 @@ def build(src: Path, cfg: dict, mode: str, out: Path, scanner, commit: str, comm
         write(pdir / "SOUL.md", soul)
         for s in pcfg["skills"]:
             write(pdir / "skills" / category / s / "SKILL.md", built_skills[s])
+        write(pdir / "NOTICE.md", notice(pname, commit))
+        (pdir / "LICENSES").mkdir(exist_ok=True)
+        (pdir / "LICENSES" / "SANA-OS-1.0.md").write_bytes(licence)
         # Checked on the bytes written, not on the string in memory.
         if core_bytes not in (pdir / "SOUL.md").read_bytes():
             problems.append(f"{pname}: Core_Principle.md is not byte-identical in the written SOUL.md")
 
-        findings = scanner(soul, scope="context") if scanner else None
-        if findings:
-            problems.append(f"{pname}: Hermes injection scan matched {findings}")
+        scan = "  scan: not run"
+        if scanner:
+            on_load, whole = scanner.as_hermes_loads(soul), scanner.whole(soul)
+            scan_report["files"][f"profiles/{pname}/SOUL.md"] = {"as_hermes_loads": on_load, "whole": whole}
+            if on_load["findings"]:
+                problems.append(f"{pname}: SOUL.md matched the Hermes scanner as Hermes loads it {on_load['findings']}")
+            if whole["findings"]:
+                problems.append(f"{pname}: SOUL.md matched the Hermes scanner in the whole text {whole['findings']}")
+            part = "" if on_load["covered_chars"] == len(soul) else f" (first {on_load['covered_chars']:,})"
+            scan = (f"  scan on load{part}: {on_load['findings'] or 'clean'}; "
+                    f"whole text: {whole['findings'] or 'clean'}")
         n = len(soul)
         manifest["profiles"][pname] = {
             "soul_chars": n, "soul_sha256": sha256(soul), "skills": pcfg["skills"],
         }
         note = "OK" if n <= SOUL_FLOOR_CAP else f"over {SOUL_FLOOR_CAP:,} — pin context_file_max_chars"
-        scan = "" if findings is None else f"  scan: {findings or 'clean'}"
         print(f"  {pname:<16} SOUL.md {n:>6,} chars ({note})  skills: {len(pcfg['skills'])}{scan}")
 
+    for path in sorted(out.rglob("*")):
+        if path.is_file():
+            manifest["files"][path.relative_to(out).as_posix()] = sha256(path.read_bytes())
     write(out / "MANIFEST.json", json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
-    return problems
+    return problems, scan_report
 
 
 if __name__ == "__main__":
