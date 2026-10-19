@@ -4,7 +4,7 @@
   "sana_os_commit": "95ee19087af52a3a28d0225de73b5a6c24e49ff1",
   "sana_os_commit_date": "2026-10-18T02:07:07+09:00",
   "inputs": {
-    "build.py": "774e06ce237744bca1383c0db668933d20f4993f7d4ad8bc5da43f0c4b3b390c",
+    "build.py": "6eabf3b3ac3aff7a097f2de2579c752ebddb0be692a9d55c12bbaa8d71f451dd",
     "sana-hermes.json": "d35d71c2d417b3452e7624ad12e4153782da5bca5e94571d09f466a8764a38ad",
     "LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
     "overlays/Persona_Friend.custom.md": "14535e9fc7676977c354d9a54b232c5d6de49739e6b026fa86e176e849dae57c",

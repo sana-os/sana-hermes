@@ -31,7 +31,10 @@ MANIFESTS = ["dist/mode-skills/MANIFEST.json", "dist/mode-inline/MANIFEST.json"]
 
 
 def git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", *args], capture_output=True, text=True, check=check)
+    # git prints file contents as UTF-8. Without an explicit encoding, Python decodes with the
+    # locale's code page (cp932 on Japanese Windows), fails in a reader thread, and the file
+    # then looks missing.
+    return subprocess.run(["git", *args], capture_output=True, encoding="utf-8", errors="replace", check=check)
 
 
 def show(path: str) -> str | None:
@@ -107,4 +110,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    # Console or pipe in a legacy code page (cp932 on Japanese Windows): replace what it
+    # cannot show (such as an em dash) instead of stopping with UnicodeEncodeError.
+    for stream in (sys.stdout, sys.stderr):
+        stream.reconfigure(errors="replace")
     sys.exit(main())

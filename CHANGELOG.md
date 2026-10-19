@@ -15,6 +15,10 @@ Why: the question that matters after an update is whether the model now receives
 
 Versions before 0.4.0 have no tags: they were handed over as files and not kept (see 0.1.0–0.3.0 below).
 
+## Unreleased
+
+- **`check_release.py` and `build.py` read git's output as UTF-8 on every platform.** Observation: on Japanese Windows (Python 3.13), `python check_release.py v0.5.2` on the correct merge commit `2148bd3` printed `UnicodeDecodeError: 'cp932' codec can't decode byte 0x94` from a reader thread, and then reported `sana-hermes.json`, `LICENSES/SANA-OS-1.0.md` and the CHANGELOG section as missing. Python decoded `git show` with the locale's code page; the files contain UTF-8 (`—`, `✓`). The same failure was reproduced on Linux by forcing cp932, and is gone with the fix. Workaround for 0.5.2: `python -X utf8 check_release.py v0.5.2`. Both scripts also no longer stop with `UnicodeEncodeError` when their output (which contains characters such as `—`) goes to a console or pipe in such a code page; characters it cannot show are replaced.
+
 ## 0.5.2 — 2026-10-19
 
 Changes from the second review (ChatGPT SANA, 2026-10-19). A patch version: no SOUL.md or SKILL.md text changes; installed profiles do not need to be reinstalled. The review's points on T7 and on the order of the safety rules change instructions and are left to a separate pull request.
