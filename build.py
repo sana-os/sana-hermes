@@ -36,6 +36,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -167,6 +168,68 @@ def load_scanner(path: str | None):
     return mod.scan_for_threats
 
 
+def write(path: Path, text: str) -> None:
+    """UTF-8, LF line endings on every platform. (Path.write_text(newline=...) needs Python 3.10.)"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(text)
+
+
+def required_inputs(cfg: dict) -> tuple[list[str], list[Path]]:
+    """Every file the build reads: (paths in the SANA OS checkout, paths in this repository)."""
+    upstream = list(cfg["core_files"]) + ["core/Core_Principle.md"]
+    local = [HERE / "overlays" / "hermes_runtime_notes.md"]
+    for spec in cfg["skills"].values():
+        if "overlay" in spec:
+            local.append(HERE / spec["overlay"])
+        else:
+            upstream.append(spec["source"])
+    for pcfg in cfg["profiles"].values():
+        persona = pcfg["persona"]
+        if "file" in persona:
+            upstream.append(persona["file"])
+        else:
+            upstream.append(persona["template"])
+            local.append(HERE / persona["custom_overlay"])
+    return sorted(set(upstream)), sorted(set(local))
+
+
+def check_output_dir(out: Path, src: Path) -> list[str]:
+    """The output directory is deleted and replaced, so it must be a build output and nothing else."""
+    problems = []
+    def inside(a: Path, b: Path) -> bool:  # a == b or a is below b
+        return a == b or b in a.parents
+    if inside(HERE, out):
+        problems.append(f"--out {out} contains this repository")
+    elif inside(out, HERE) and not inside(out, HERE / "dist"):
+        problems.append(f"--out {out} is inside this repository but not under dist/")
+    if inside(out, src) or inside(src, out):
+        problems.append(f"--out {out} overlaps the SANA OS checkout {src}")
+    if out.exists():
+        if not out.is_dir():
+            problems.append(f"--out {out} is a file")
+        elif any(out.iterdir()) and not (out / "MANIFEST.json").is_file():
+            problems.append(f"--out {out} is not empty and has no MANIFEST.json, so it is not a previous build output")
+    return problems
+
+
+def replace_dir(new: Path, out: Path) -> None:
+    """Put the finished build in place of the old one; restore the old one if that fails."""
+    old = None
+    if out.exists():
+        old = Path(tempfile.mkdtemp(prefix=f".{out.name}.old-", dir=out.parent))
+        old.rmdir()
+        out.rename(old)
+    try:
+        new.rename(out)
+    except Exception:
+        if old is not None:
+            old.rename(out)
+        raise
+    if old is not None:
+        shutil.rmtree(old)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--sana-os", default=str(HERE / "upstream" / "sana-os"),
@@ -178,24 +241,63 @@ def main() -> int:
 
     src = Path(args.sana_os).resolve()
     cfg = json.loads((HERE / "sana-hermes.json").read_text(encoding="utf-8"))
-    out = Path(args.out) if args.out else HERE / "dist" / f"mode-{args.mode}"
-    if out.exists():
-        shutil.rmtree(out)
-    commit, commit_date = upstream_commit(src)
+    out = (Path(args.out) if args.out else HERE / "dist" / f"mode-{args.mode}").resolve()
+
+    # 1. Check everything that can be checked before anything is written.
+    #    Why: a failed build must leave the previous dist/ as it was.
+    problems: list[str] = []
+    if not src.is_dir():
+        problems.append(f"SANA OS checkout not found: {src} (run: git submodule update --init)")
+    else:
+        commit, commit_date = upstream_commit(src)
+        # Provenance must be real: the Source line of each skill and MANIFEST.json name commits.
+        if commit == "unknown":
+            problems.append(f"{src} is not a git checkout; the source commits cannot be recorded "
+                            "(clone sana-os, or run: git submodule update --init)")
+        elif is_shallow(src):
+            problems.append(f"{src} is a shallow clone; the Source line of each skill would name the wrong commit "
+                            f"(run: git -C {src} fetch --unshallow)")
+        upstream_files, local_files = required_inputs(cfg)
+        problems += [f"missing in SANA OS: {rel}" for rel in upstream_files if not (src / rel).is_file()]
+        problems += [f"missing in this repository: {p.relative_to(HERE)}" for p in local_files if not p.is_file()]
+    problems += check_output_dir(out, src)
+    if args.scan and not Path(args.scan).is_file():
+        problems.append(f"scanner not found: {args.scan}")
+    if problems:
+        return report(problems, untouched=out)
+    scanner = load_scanner(args.scan)
+
+    # 2. Build into a temporary directory next to the output, check it, then swap.
+    out.parent.mkdir(parents=True, exist_ok=True)
+    tmp = Path(tempfile.mkdtemp(prefix=f".{out.name}.build-", dir=out.parent))
+    try:
+        problems = build(src, cfg, args.mode, tmp, scanner, commit, commit_date, out)
+        if problems:
+            return report(problems, untouched=out)
+        replace_dir(tmp, out)
+    finally:
+        if tmp.exists():
+            shutil.rmtree(tmp)
+    print("\nAll checks passed.")
+    return 0
+
+
+def report(problems: list[str], untouched: Path) -> int:
+    print("\nProblems:")
+    for p in problems:
+        print("  -", p)
+    print(f"\nNothing was written; {untouched} is unchanged.")
+    return 1
+
+
+def build(src: Path, cfg: dict, mode: str, out: Path, scanner, commit: str, commit_date: str,
+          final: Path) -> list[str]:
     version = cfg["package_version"]
     category = cfg["skill_category"]
-    scanner = load_scanner(args.scan)
-    core_principle = read(src, "core/Core_Principle.md")
+    core_bytes = (src / "core" / "Core_Principle.md").read_bytes().strip(b"\n")
     problems: list[str] = []
-    # Provenance must be real: the Source line of each skill and MANIFEST.json name commits.
-    if commit == "unknown":
-        problems.append(f"{src} is not a git checkout; the source commits cannot be recorded "
-                        "(clone sana-os, or run: git submodule update --init)")
-    elif is_shallow(src):
-        problems.append(f"{src} is a shallow clone; the Source line of each skill would name the wrong commit "
-                        f"(run: git -C {src} fetch --unshallow)")
     manifest: dict = {
-        "package_version": version, "mode": args.mode,
+        "package_version": version, "mode": mode,
         "sana_os_commit": commit, "sana_os_commit_date": commit_date, "sources": {}, "profiles": {},
     }
 
@@ -219,10 +321,10 @@ def main() -> int:
     for rel in cfg["core_files"]:
         manifest["sources"][rel] = sha256(read(src, rel))
 
-    print(f"SANA OS commit {commit[:12]}  mode={args.mode}  -> {out}")
+    print(f"SANA OS commit {commit[:12]}  mode={mode}  -> {final}")
     for pname, pcfg in cfg["profiles"].items():
         parts = [provenance(rel) + read(src, rel).strip("\n") for rel in cfg["core_files"]]
-        if args.mode == "inline":
+        if mode == "inline":
             for s in pcfg["skills"]:
                 rel = cfg["skills"][s].get("source", "")
                 if rel.startswith("frameworks/") and not rel.endswith("README.md"):
@@ -234,18 +336,16 @@ def main() -> int:
         else:
             parts.append(template_persona(src, persona).strip("\n"))
             manifest["sources"][persona["template"]] = sha256(read(src, persona["template"]))
-        parts.append(runtime_notes(pcfg["skills"], cfg["skills"], args.mode).strip("\n"))
+        parts.append(runtime_notes(pcfg["skills"], cfg["skills"], mode).strip("\n"))
         soul = join_parts(parts)
 
-        if core_principle.strip("\n") not in soul:
-            problems.append(f"{pname}: Core_Principle.md is not byte-identical in SOUL.md")
         pdir = out / "profiles" / pname
-        (pdir / "skills" / category).mkdir(parents=True, exist_ok=True)
-        (pdir / "SOUL.md").write_text(soul, encoding="utf-8", newline="\n")
+        write(pdir / "SOUL.md", soul)
         for s in pcfg["skills"]:
-            sd = pdir / "skills" / category / s
-            sd.mkdir(parents=True, exist_ok=True)
-            (sd / "SKILL.md").write_text(built_skills[s], encoding="utf-8", newline="\n")
+            write(pdir / "skills" / category / s / "SKILL.md", built_skills[s])
+        # Checked on the bytes written, not on the string in memory.
+        if core_bytes not in (pdir / "SOUL.md").read_bytes():
+            problems.append(f"{pname}: Core_Principle.md is not byte-identical in the written SOUL.md")
 
         findings = scanner(soul, scope="context") if scanner else None
         if findings:
@@ -258,14 +358,8 @@ def main() -> int:
         scan = "" if findings is None else f"  scan: {findings or 'clean'}"
         print(f"  {pname:<16} SOUL.md {n:>6,} chars ({note})  skills: {len(pcfg['skills'])}{scan}")
 
-    (out / "MANIFEST.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    if problems:
-        print("\nProblems:")
-        for p in problems:
-            print("  -", p)
-        return 1
-    print("\nAll checks passed.")
-    return 0
+    write(out / "MANIFEST.json", json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+    return problems
 
 
 if __name__ == "__main__":
