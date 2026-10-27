@@ -1,11 +1,11 @@
 {
-  "package_version": "0.5.2",
+  "package_version": "0.6.0",
   "mode": "inline",
   "sana_os_commit": "0d1a41d37b7f7765783effafece809d22b72c428",
   "sana_os_commit_date": "2026-10-27T22:56:45+09:00",
   "inputs": {
     "build.py": "6eabf3b3ac3aff7a097f2de2579c752ebddb0be692a9d55c12bbaa8d71f451dd",
-    "sana-hermes.json": "d35d71c2d417b3452e7624ad12e4153782da5bca5e94571d09f466a8764a38ad",
+    "sana-hermes.json": "9e34b06081fb2ef4affddaab73e715e8b40f30f9623e70d135b67979ab86ff6d",
     "LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
     "overlays/Persona_Friend.custom.md": "14535e9fc7676977c354d9a54b232c5d6de49739e6b026fa86e176e849dae57c",
     "overlays/Persona_Hub.custom.md": "d43adf6232495061a9179f1c600eb4a4928d08e813416ce24b17cd516698ab10",

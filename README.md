@@ -134,8 +134,8 @@ friend は厳密さを求めないぶん、ローカルモデルでも動かし�
 
 ### 2つのモード
 
-- **mode-skills（標準）**：上の構成。SOUL.md は 25,000〜29,000 文字。
-- **mode-inline（比較用）**：GPTs と同じ順序でフレームワーク全文も SOUL.md に入れたもの（36,000〜75,000 文字）。スキルも一緒に入ります。
+- **mode-skills（標準）**：上の構成。SOUL.md は 26,000〜31,000 文字。
+- **mode-inline（比較用）**：GPTs と同じ順序でフレームワーク全文も SOUL.md に入れたもの（37,000〜77,000 文字）。スキルも一緒に入ります。
 
 スキルにすると、モデルが「今このレンズが要る」と判断しない限り本文は読まれません。GPTs では常に見えていたものが、見えない状態になるということです。どちらが SANA らしく動くかは、cases のページの3つの質問などで比べてみてください。これは「どこまでが構造に宿り、どこからが基盤の作りに依存するか」の観察にもなります。
 
@@ -173,7 +173,7 @@ cd sana-hermes
 ### 3. config.yaml に1行足す（重要）
 
 Hermes は SOUL.md を文字数で切り詰めます。上限は
-`max(20,000, モデルのコンテキスト長 × 4 × 0.06)` 文字で、**モデルのコンテキスト長がわからないときは 20,000 文字**です（hermes-agent のソース `agent/prompt_builder.py` で確認）。切り詰めは先頭70%と末尾20%を残し、**中間を落とします**。たとえば sana-history の SOUL.md（約 25,000 文字）が 20,000 文字で切られると、**Communication_Layer の全体と、ペルソナの冒頭（役割と不変条件の章）が消えます**。安全装置（GentleRadical TriggerFlow）もこの中に含まれます。
+`max(20,000, モデルのコンテキスト長 × 4 × 0.06)` 文字で、**モデルのコンテキスト長がわからないときは 20,000 文字**です（hermes-agent のソース `agent/prompt_builder.py` で確認）。切り詰めは先頭70%と末尾20%を残し、**中間を落とします**。たとえば sana-history の SOUL.md（約 26,000 文字）が 20,000 文字で切られると、**Communication_Layer の全体と、ペルソナの冒頭（役割と不変条件の章）が消えます**。安全装置（GentleRadical TriggerFlow）もこの中に含まれます。
 
 SOUL.md が Hermes の取り込み上限で切り詰められないよう、各プロファイルの `config.yaml` に上限を固定してください。`install.ps1` は `config.yaml` を書き換えませんが、読んで確かめ、上限がない、または SOUL.md より小さいプロファイルを「NOT READY」と表示します。
 
@@ -245,7 +245,7 @@ auxiliary:
 
 - Core_Principle.md：書き出した各 SOUL.md のバイト列に、`core/Core_Principle.md` のバイト列（前後の改行を除く）がそのまま含まれる
 - Hermes 自身のプロンプトインジェクション検査（`tools/threat_patterns.py`、context スコープ）を、二通りに使います。どちらかで一致すればビルドエラーです（`--scan` を付けたときと CI）。
-  - **Hermes が SOUL.md を読み込むときと同じ呼び方**：Hermes はこの検査に渡す文章を先頭 65,536 文字（`MAX_SCAN_CHARS`）で切ります。mode-skills の SOUL.md（約 29,000 文字まで）は全体が入りますが、mode-inline の hub・history・review・friend（66,000〜75,000 文字）は、末尾が Hermes 自身の検査の範囲外です
+  - **Hermes が SOUL.md を読み込むときと同じ呼び方**：Hermes はこの検査に渡す文章を先頭 65,536 文字（`MAX_SCAN_CHARS`）で切ります。mode-skills の SOUL.md（約 31,000 文字まで）は全体が入りますが、mode-inline の hub・history・review・friend（67,000〜77,000 文字）は、末尾が Hermes 自身の検査の範囲外です
   - **全文**：SOUL.md と、すべての SKILL.md を、重なりのある区間に分けて検査します。Hermes は `skill_view` で読んだスキルを検査しないので、これはこのパッケージ独自の検査です
   - どの範囲を検査したかは、`--report` で JSON に書き出せます（CI では成果物として残します）。`dist/` には入れません。実行ごとの記録で、決定的な生成物ではないからです
 
@@ -286,9 +286,9 @@ Hermes の注入検査も手元で通す場合は、`hermes-agent` を取得し�
 **版を出す**：PR を GitHub で merge し、`git switch main` → `git pull` のあと、タグを付ける前に確かめます。
 
 ```powershell
-python check_release.py v0.5.2      # 版番号・ライセンス・main の先頭の merge コミットか、を確認
-git tag -a v0.5.2 -m "..."
-git push origin v0.5.2              # CI でも同じ確認が走る
+python check_release.py v0.6.0      # 版番号・ライセンス・main の先頭の merge コミットか、を確認
+git tag -a v0.6.0 -m "..."
+git push origin v0.6.0              # CI でも同じ確認が走る
 ```
 プロファイルやスキルの組み合わせを変えるときは `sana-hermes.json` を、ハブの人格を変えるときは `overlays/Persona_Hub.custom.md` を編集して作り直してください。
 
