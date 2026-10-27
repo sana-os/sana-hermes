@@ -1,8 +1,8 @@
 {
   "package_version": "0.5.2",
   "mode": "inline",
-  "sana_os_commit": "95ee19087af52a3a28d0225de73b5a6c24e49ff1",
-  "sana_os_commit_date": "2026-10-18T02:07:07+09:00",
+  "sana_os_commit": "0d1a41d37b7f7765783effafece809d22b72c428",
+  "sana_os_commit_date": "2026-10-27T22:56:45+09:00",
   "inputs": {
     "build.py": "6eabf3b3ac3aff7a097f2de2579c752ebddb0be692a9d55c12bbaa8d71f451dd",
     "sana-hermes.json": "d35d71c2d417b3452e7624ad12e4153782da5bca5e94571d09f466a8764a38ad",
@@ -25,23 +25,23 @@
     "frameworks/History_Analysis.md": "830e2d6906375de356528da0e66eebaf40babbd833914d92e3dcbf311e5c7b93",
     "frameworks/Value_Formation.md": "e0511837b58a1bdb9b706dac2be7f3d5ce21e5c13d4e1e28ea01131d77289d0e",
     "frameworks/README.md": "b2cf85673d22ddd0007286f4bee64653d231e7f7333ebef892d2ca1725954f50",
-    "core/Core_Specification.md": "ae72a6a46d5b83ed89a96b1020ed2f027d600c38e9301795c8bcddd2ade46442",
+    "core/Core_Specification.md": "e6bf04cd621c03ef631c1067148b29f2c6d9cc428dbd8c7441d74a354c6329d2",
     "overlays/skills/sana-review-history.md": "4dac458f8b3d7f05a6ae23a036ea6fb6507c02e44d1f339473610f5bc28fe940",
     "overlays/skills/sana-review-design.md": "fb83b046ea285a46dacaecfffb2a599fc5b9d5ed4dd2d9fea2944f456b99d3bd",
     "overlays/skills/sana-review-framework-change.md": "bbaa395da51f65b9ead21e41b0bafee7339eda440af733bf9290c2a41824b960",
     "overlays/skills/sana-friend-story.md": "211fc1e2ae5cfccbe2b0bff7cd7421b7cd09befde5e6623760cf5ea3278e899b",
     "core/Core_Principle.md": "c20900fe6b726de85a7b3418b1b25bb2160b696948b90e50d585355ecee79b36",
     "core/Integrated_Knowledge.md": "75c5cae614587e98a05ca55158b0a7ee355ac763ab0d5544bb01dd6a2500095f",
-    "core/Communication_Layer.md": "085782453939991d647c105db84e2bc277b15224290a8d712c0aad4849b06d5d",
-    "personas/Persona_Template.md": "fd319f0fb119a3eaa94e6cd6e920724c5d2c75c49d46bb8c6908dffd67e5c58b",
-    "personas/Persona_History.md": "f5736e05274f2c4ec5d5703de3709e11510ef96c12e562324d7049bc3469f4da",
-    "personas/Persona_Coaching.md": "13d224fb61ca3d040b2780f413fde2a52be299a66b3bc833453cf3efb234cca0",
+    "core/Communication_Layer.md": "40e51a322b519bec6550d0778abbbd803cfedf0118ffb600d0d104a98fcbed75",
+    "personas/Persona_Template.md": "d21910337fd1c2b66a42a0adc7f6f96442d7b150f5c53459de37dae7911aeb5f",
+    "personas/Persona_History.md": "920ace16c231f516a3c28a9122ad737bf1304e3bf7086568b0a20f056c7e9905",
+    "personas/Persona_Coaching.md": "637ecd8960df51048c9f5f2d3ec94217c935149b7cb8868d515d83801a54d351",
     "personas/Persona_Reasoning.md": "746408c57afd108e3c873b22b82e2e323021ef82decec0a77016c56b2d428b3d"
   },
   "profiles": {
     "sana-hub": {
-      "soul_chars": 74227,
-      "soul_sha256": "6c3316ca18b1b6203a4d0d57121d60c24094ee3a62a63ac23f9e746e6570f29d",
+      "soul_chars": 76095,
+      "soul_sha256": "aae4fb75f280345989e80f59bbd23e5e17ed96ac8559d6fd4fd38ebcbdd4124e",
       "skills": [
         "sana-gmm",
         "sana-rbm",
@@ -55,8 +55,8 @@
       ]
     },
     "sana-history": {
-      "soul_chars": 66329,
-      "soul_sha256": "2df79afaee1230cf2be0048f1f5bb0c755dc9ac0c03ab7db0ef2417e54c881c7",
+      "soul_chars": 67194,
+      "soul_sha256": "15b0ed5a5671e1cef10eb2f150e59fdda3e55cf3d9840a4ef3808aef72f8cde6",
       "skills": [
         "sana-gmm",
         "sana-rbm",
@@ -67,8 +67,8 @@
       ]
     },
     "sana-coaching": {
-      "soul_chars": 47259,
-      "soul_sha256": "058088c949a695345e03a2e74a502f6ad886ee22575d36bb67362f9f13205453",
+      "soul_chars": 48105,
+      "soul_sha256": "4a1c3d855a0445f2944800cc00f70e711a59d7826aedddd2e075bfa8eb963963",
       "skills": [
         "sana-rbm",
         "sana-cpm",
@@ -76,16 +76,16 @@
       ]
     },
     "sana-reasoning": {
-      "soul_chars": 36331,
-      "soul_sha256": "24154d5dd68580f13b5cb2d8e75d52a5ebf7d5c0a07e1c72e781a3a27c5c5ef7",
+      "soul_chars": 36851,
+      "soul_sha256": "1052c8bc4e192b4066f6ec282917a087c6122b89b2fc4316201ae5c727e88049",
       "skills": [
         "sana-rbm",
         "sana-rsm"
       ]
     },
     "sana-review": {
-      "soul_chars": 74708,
-      "soul_sha256": "17ab1314c988500f4d8f7eff4bb2f2b237804257e7945c96eafab046ea8ce9dc",
+      "soul_chars": 76576,
+      "soul_sha256": "7683ae7afe97cea322afaacab75517d78155454257b961fb60c88ec304fa0c3e",
       "skills": [
         "sana-review-design",
         "sana-review-history",
@@ -102,8 +102,8 @@
       ]
     },
     "sana-friend": {
-      "soul_chars": 74698,
-      "soul_sha256": "8ba11e80af06fc8a48cc39af4fe8626b02368b8387a71a1da31282b8ae7dd226",
+      "soul_chars": 76566,
+      "soul_sha256": "00e15ba8c4c6452a5cbf1f6fd6c21163cf3309c00b249eb584680de05ed2ecab",
       "skills": [
         "sana-friend-story",
         "sana-value-formation",
@@ -118,14 +118,14 @@
   },
   "files": {
     "profiles/sana-coaching/LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
-    "profiles/sana-coaching/NOTICE.md": "44594a78c0cb899db15a580076a6f3f98cd3b6c3ac9e09bf5fcf401bea7f1797",
-    "profiles/sana-coaching/SOUL.md": "058088c949a695345e03a2e74a502f6ad886ee22575d36bb67362f9f13205453",
+    "profiles/sana-coaching/NOTICE.md": "a0d45176edd026cb92d8787c0e5990e68d7c331f384838bf55583341adf03c77",
+    "profiles/sana-coaching/SOUL.md": "4a1c3d855a0445f2944800cc00f70e711a59d7826aedddd2e075bfa8eb963963",
     "profiles/sana-coaching/skills/sana-os/sana-cpm/SKILL.md": "5d96c2ca2ad3986635404d2fc4cc58c7faf6e264c62c4c6effc1e7bd58857817",
     "profiles/sana-coaching/skills/sana-os/sana-rbm/SKILL.md": "d02cba13ebd077cea14a059e41fb867bda0d5c3ac6205f689debc010aeeb7a6c",
     "profiles/sana-coaching/skills/sana-os/sana-value-formation/SKILL.md": "143b9c23bcdd6f642e1f6e3f6d71d91e24524cd7cde534aeefe1a06af6f22985",
     "profiles/sana-friend/LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
-    "profiles/sana-friend/NOTICE.md": "cfa45755b34a70832aa4ae3984570b4cd9da06fffc9d8897a67a4267577f91e1",
-    "profiles/sana-friend/SOUL.md": "8ba11e80af06fc8a48cc39af4fe8626b02368b8387a71a1da31282b8ae7dd226",
+    "profiles/sana-friend/NOTICE.md": "a5370ac0a4994bb2d3a44aa22ea9aa8d0e2e900746348e556fd436467993d2d7",
+    "profiles/sana-friend/SOUL.md": "00e15ba8c4c6452a5cbf1f6fd6c21163cf3309c00b249eb584680de05ed2ecab",
     "profiles/sana-friend/skills/sana-os/sana-cpm/SKILL.md": "5d96c2ca2ad3986635404d2fc4cc58c7faf6e264c62c4c6effc1e7bd58857817",
     "profiles/sana-friend/skills/sana-os/sana-friend-story/SKILL.md": "332ef53635e9fc5a68651b10aaa3ecb6f595505189e54e6003477128894728b4",
     "profiles/sana-friend/skills/sana-os/sana-gmm/SKILL.md": "b993aca334e85956bc0f17b68dd422f509a67addc0d1f4d2a7f9820c04becd6d",
@@ -135,8 +135,8 @@
     "profiles/sana-friend/skills/sana-os/sana-rsm/SKILL.md": "141c9a2dbeaec1719380112cbac8ad8edaa2bd7dd1b84d8014094bfea23a627e",
     "profiles/sana-friend/skills/sana-os/sana-value-formation/SKILL.md": "143b9c23bcdd6f642e1f6e3f6d71d91e24524cd7cde534aeefe1a06af6f22985",
     "profiles/sana-history/LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
-    "profiles/sana-history/NOTICE.md": "88d9ad80b3cb4d7457c19a7b37fa4dea6f1d0208faaaaf2ea69e27c8860e3730",
-    "profiles/sana-history/SOUL.md": "2df79afaee1230cf2be0048f1f5bb0c755dc9ac0c03ab7db0ef2417e54c881c7",
+    "profiles/sana-history/NOTICE.md": "dd12752f8bba579ce92c56029620102f93a813bb8887dcd578f22c4e2cae8a69",
+    "profiles/sana-history/SOUL.md": "15b0ed5a5671e1cef10eb2f150e59fdda3e55cf3d9840a4ef3808aef72f8cde6",
     "profiles/sana-history/skills/sana-os/sana-cpm/SKILL.md": "5d96c2ca2ad3986635404d2fc4cc58c7faf6e264c62c4c6effc1e7bd58857817",
     "profiles/sana-history/skills/sana-os/sana-gmm/SKILL.md": "b993aca334e85956bc0f17b68dd422f509a67addc0d1f4d2a7f9820c04becd6d",
     "profiles/sana-history/skills/sana-os/sana-history-analysis/SKILL.md": "71fab67951d843623e0abcd4990f9db597cda30627adf50ef16786a8eb61e7f5",
@@ -144,9 +144,9 @@
     "profiles/sana-history/skills/sana-os/sana-rbm/SKILL.md": "d02cba13ebd077cea14a059e41fb867bda0d5c3ac6205f689debc010aeeb7a6c",
     "profiles/sana-history/skills/sana-os/sana-rsm/SKILL.md": "141c9a2dbeaec1719380112cbac8ad8edaa2bd7dd1b84d8014094bfea23a627e",
     "profiles/sana-hub/LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
-    "profiles/sana-hub/NOTICE.md": "48f29eb7f64ee7d29ddbe0439d0c126a0aad511d9db65a8cbaabfc86c787d44c",
-    "profiles/sana-hub/SOUL.md": "6c3316ca18b1b6203a4d0d57121d60c24094ee3a62a63ac23f9e746e6570f29d",
-    "profiles/sana-hub/skills/sana-os/sana-core-specification/SKILL.md": "9c258b589aa62f9c97dc2be58b258606b1ec00b3e620ae1cb2f1bc61969f5b8e",
+    "profiles/sana-hub/NOTICE.md": "8c3348baf66e4a1fc5fcc99824b478d6a8a2ae19d3f6071c3be24b3f19e4aeb4",
+    "profiles/sana-hub/SOUL.md": "aae4fb75f280345989e80f59bbd23e5e17ed96ac8559d6fd4fd38ebcbdd4124e",
+    "profiles/sana-hub/skills/sana-os/sana-core-specification/SKILL.md": "0f72e8024d295b549e06bad99a3cedbca542d23c043421d74ae07780326e5f4b",
     "profiles/sana-hub/skills/sana-os/sana-cpm/SKILL.md": "5d96c2ca2ad3986635404d2fc4cc58c7faf6e264c62c4c6effc1e7bd58857817",
     "profiles/sana-hub/skills/sana-os/sana-frameworks-index/SKILL.md": "3be06ff2525b7f83db9949122940ae467e4d4aa884b4eedfb1b712baa3bc04d3",
     "profiles/sana-hub/skills/sana-os/sana-gmm/SKILL.md": "b993aca334e85956bc0f17b68dd422f509a67addc0d1f4d2a7f9820c04becd6d",
@@ -156,14 +156,14 @@
     "profiles/sana-hub/skills/sana-os/sana-rsm/SKILL.md": "141c9a2dbeaec1719380112cbac8ad8edaa2bd7dd1b84d8014094bfea23a627e",
     "profiles/sana-hub/skills/sana-os/sana-value-formation/SKILL.md": "143b9c23bcdd6f642e1f6e3f6d71d91e24524cd7cde534aeefe1a06af6f22985",
     "profiles/sana-reasoning/LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
-    "profiles/sana-reasoning/NOTICE.md": "c166cb2033113d158aa37d4158bf6650d0d356c8bd5e3b756deed990e58cd3d1",
-    "profiles/sana-reasoning/SOUL.md": "24154d5dd68580f13b5cb2d8e75d52a5ebf7d5c0a07e1c72e781a3a27c5c5ef7",
+    "profiles/sana-reasoning/NOTICE.md": "ef7578b1179d1ac59be27baac15c24f344f8b3ecb228889972ef4fc88563ea17",
+    "profiles/sana-reasoning/SOUL.md": "1052c8bc4e192b4066f6ec282917a087c6122b89b2fc4316201ae5c727e88049",
     "profiles/sana-reasoning/skills/sana-os/sana-rbm/SKILL.md": "d02cba13ebd077cea14a059e41fb867bda0d5c3ac6205f689debc010aeeb7a6c",
     "profiles/sana-reasoning/skills/sana-os/sana-rsm/SKILL.md": "141c9a2dbeaec1719380112cbac8ad8edaa2bd7dd1b84d8014094bfea23a627e",
     "profiles/sana-review/LICENSES/SANA-OS-1.0.md": "3de10ea094219ea52bffd7a2482f442bb989a340c0cd397f45c6114674c59787",
-    "profiles/sana-review/NOTICE.md": "69ba8dd55be5775f46edce6020400a9b990382f25712e5d0cfc90070e24b148d",
-    "profiles/sana-review/SOUL.md": "17ab1314c988500f4d8f7eff4bb2f2b237804257e7945c96eafab046ea8ce9dc",
-    "profiles/sana-review/skills/sana-os/sana-core-specification/SKILL.md": "9c258b589aa62f9c97dc2be58b258606b1ec00b3e620ae1cb2f1bc61969f5b8e",
+    "profiles/sana-review/NOTICE.md": "dc12c06969e093498dcf6aaef3ad4c26b96912bce2a323224fd18a1b74ac92b4",
+    "profiles/sana-review/SOUL.md": "7683ae7afe97cea322afaacab75517d78155454257b961fb60c88ec304fa0c3e",
+    "profiles/sana-review/skills/sana-os/sana-core-specification/SKILL.md": "0f72e8024d295b549e06bad99a3cedbca542d23c043421d74ae07780326e5f4b",
     "profiles/sana-review/skills/sana-os/sana-cpm/SKILL.md": "5d96c2ca2ad3986635404d2fc4cc58c7faf6e264c62c4c6effc1e7bd58857817",
     "profiles/sana-review/skills/sana-os/sana-frameworks-index/SKILL.md": "3be06ff2525b7f83db9949122940ae467e4d4aa884b4eedfb1b712baa3bc04d3",
     "profiles/sana-review/skills/sana-os/sana-gmm/SKILL.md": "b993aca334e85956bc0f17b68dd422f509a67addc0d1f4d2a7f9820c04becd6d",

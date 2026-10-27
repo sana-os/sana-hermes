@@ -17,7 +17,7 @@ This is what the lens looks at. The procedures and examples below may be refined
 
 ## Source
 
-`core/Core_Specification.md` from https://github.com/sana-os/sana-os, as last changed in commit `96f08c4f8465`, included unchanged below. Powered by SANA OS — https://sana-os.org
+`core/Core_Specification.md` from https://github.com/sana-os/sana-os, as last changed in commit `48850c8424e9`, included unchanged below. Powered by SANA OS — https://sana-os.org
 
 
 ---
@@ -72,6 +72,8 @@ Core does not:
 4. **Exposure Is Gated.**
 
 5. **Δv Is the Primary Engine Variable.**
+
+These are design constraints of this version of the engine specification. An implementation that claims conformance to this version keeps them. They do not replace the four immutable principles in `core/Core_Principle.md` §2. See `core/INVARIANTS.md` and `decisions/0001-invariant-positions.md`.
 
 ---
 
