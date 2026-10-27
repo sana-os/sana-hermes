@@ -15,6 +15,26 @@ Why: the question that matters after an update is whether the model now receives
 
 Versions before 0.4.0 have no tags: they were handed over as files and not kept (see 0.1.0–0.3.0 below).
 
+## 0.6.0 — 2026-10-27
+
+A minor version: the SANA OS pin moves, so SOUL.md and SKILL.md texts change. Reinstall the profiles. Pre-release until checked in a running Hermes session.
+
+### Upstream pin
+
+- **sana-os `95ee190` → `0d1a41d`.** Brings in decisions 0001–0003, the persona wording (sana-os #4) and the scope of T7 (sana-os #6), which 0.5.0 listed as not yet included. What each profile receives:
+  - every SOUL.md — `Communication_Layer.md` §5: at most one perspective shift, only when it can be received, otherwise omitted; Soft close ends the persuasive attempt, not the conversation; respecting autonomy does not extend to helping carry out the violent change; platform and operator safety standards hold throughout the flow.
+  - coaching, history — the §2 heading no longer reads as the whole Core; three lines say the two items emphasize principles 1 and 2 of the four, add none and replace none.
+  - hub, review, friend (built from the Template) — §0 heading "Mandatory Persona Operating Requirements" with a paragraph naming the four principles; T7 as defined in decision 0002 (at most one optional perspective shift per unresolved issue, zero allowed; requested explanations, corrections, safety boundaries and danger responses not limited). The earlier "alternative framing or structural views only once" is gone.
+  - hub, review — the Core Specification skill: its five constraints do not replace the four principles.
+  Checked on the reference composition before merging upstream (sana-eval runs `pr3-v3` and `pr4-t7`, four model environments; results and remaining gaps in sana-os `CHANGELOG.md`). Those checks are not a check in Hermes.
+- **Not brought in:** loading the eight requirements into Coaching and History. sana-os records it as decided but not applied; the loading orders in `sana-hermes.json` are unchanged.
+- `LICENSE.md` is byte-identical at the new pin; `LICENSES/SANA-OS-1.0.md` is unchanged.
+- SOUL.md sizes: mode-skills 25,960–30,782 characters, mode-inline 36,851–76,576. In mode-inline, hub, history, review and friend stay over 65,536, so Hermes' scan on load still does not reach their end; the whole-text scan is clean. The README's figures are updated.
+
+### Tools (no change to SOUL.md or SKILL.md text)
+
+- **`check_release.py` and `build.py` read git's output as UTF-8 on every platform.** Observation: on Japanese Windows (Python 3.13), `python check_release.py v0.5.2` on the correct merge commit `2148bd3` printed `UnicodeDecodeError: 'cp932' codec can't decode byte 0x94` from a reader thread, and then reported `sana-hermes.json`, `LICENSES/SANA-OS-1.0.md` and the CHANGELOG section as missing. Python decoded `git show` with the locale's code page; the files contain UTF-8 (`—`, `✓`). The same failure was reproduced on Linux by forcing cp932, and is gone with the fix. Workaround for 0.5.2: `python -X utf8 check_release.py v0.5.2`. Both scripts also no longer stop with `UnicodeEncodeError` when their output (which contains characters such as `—`) goes to a console or pipe in such a code page; characters it cannot show are replaced.
+
 ## 0.5.2 — 2026-10-19
 
 Changes from the second review (ChatGPT SANA, 2026-10-19). A patch version: no SOUL.md or SKILL.md text changes; installed profiles do not need to be reinstalled. The review's points on T7 and on the order of the safety rules change instructions and are left to a separate pull request.

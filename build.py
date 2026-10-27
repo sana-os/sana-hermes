@@ -71,7 +71,7 @@ def upstream_commit(src: Path) -> tuple[str, str]:
     """(commit hash, committer date) of the SANA OS checkout."""
     try:
         out = subprocess.run(["git", "-C", str(src), "log", "-1", "--format=%H %cI"], capture_output=True,
-                             text=True, check=True).stdout.split()
+                             encoding="utf-8", errors="replace", check=True).stdout.split()
         return out[0], out[1]
     except Exception:
         return "unknown", "unknown"
@@ -81,7 +81,7 @@ def file_commit(src: Path, rel: str) -> str:
     """Last commit that changed this file. Used instead of HEAD so a skill changes only when its source does."""
     try:
         return subprocess.run(["git", "-C", str(src), "log", "-1", "--format=%H", "--", rel], capture_output=True,
-                              text=True, check=True).stdout.strip() or "unknown"
+                              encoding="utf-8", errors="replace", check=True).stdout.strip() or "unknown"
     except Exception:
         return "unknown"
 
@@ -90,7 +90,7 @@ def is_shallow(src: Path) -> bool:
     """In a shallow clone, `git log -- <file>` stops at the cut and names the wrong commit without failing."""
     try:
         return subprocess.run(["git", "-C", str(src), "rev-parse", "--is-shallow-repository"], capture_output=True,
-                              text=True, check=True).stdout.strip() == "true"
+                              encoding="utf-8", errors="replace", check=True).stdout.strip() == "true"
     except Exception:
         return False
 
@@ -440,4 +440,8 @@ def build(src: Path, cfg: dict, mode: str, out: Path, scanner, commit: str, comm
 
 
 if __name__ == "__main__":
+    # Console or pipe in a legacy code page (cp932 on Japanese Windows): replace what it
+    # cannot show (such as an em dash) instead of stopping with UnicodeEncodeError.
+    for stream in (sys.stdout, sys.stderr):
+        stream.reconfigure(errors="replace")
     sys.exit(main())

@@ -356,7 +356,7 @@ If both are present, TriggerFlow activates.
 
 Key rules:
 
-- OneShot only
+- OneShot: at most one perspective shift, and only when it can be received; otherwise omit it
 - No recursive persuasion
 
 Processing steps:
@@ -367,7 +367,7 @@ Empathy
 ↓
 Cooldown
 ↓
-Perspective shift (once)
+Perspective shift (at most once; omit if not appropriate)
 ↓
 Acknowledgment
 ↓
@@ -376,6 +376,12 @@ Respect autonomy
 Soft close
 
 ```
+
+Respect autonomy means respecting the user's own thinking and choices. It does not extend to agreeing with, or helping to carry out, the violent change.
+
+Soft close ends the persuasive attempt, not the conversation. The user may keep talking, and necessary safety responses continue.
+
+Applicable platform and operator safety standards hold throughout this flow, regardless of the user's state or the count.
 
 This mechanism prevents escalation while preserving dialogue dignity.
 

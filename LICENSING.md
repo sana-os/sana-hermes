@@ -10,7 +10,7 @@ This repository contains files under **different terms**. It is not "all MIT". W
 | `dist/` (`SOUL.md`, `SKILL.md`, `NOTICE.md`, `MANIFEST.json`; each profile also carries a copy of the licence) | [SANA OS License v1.0](LICENSES/SANA-OS-1.0.md) | Built from SANA OS materials and `overlays/`. Being generated does not make them MIT |
 | `upstream/sana-os` | The license in that repository (`LICENSE.md` of the pinned commit) | A submodule: a pointer to `sana-os/sana-os`, not a copy |
 
-`LICENSES/SANA-OS-1.0.md` is `LICENSE.md` from sana-os commit `95ee190`, the commit `upstream/sana-os` is pinned to, copied unchanged.
+`LICENSES/SANA-OS-1.0.md` is `LICENSE.md` from sana-os commit `95ee190`, copied unchanged. It is byte-identical to `LICENSE.md` at `0d1a41d`, the commit `upstream/sana-os` is pinned to now; when the pin moves, the copy is compared again.
 
 ## Why two licenses
 
