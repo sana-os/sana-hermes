@@ -180,7 +180,7 @@ SOUL.md が Hermes の取り込み上限で切り詰められないよう、各�
 この設定が決めるのは、**Hermes がファイルを取り込む上限**です。モデル自体のコンテキスト容量ではありません。SOUL.md に加えて、スキルの一覧、記憶、ツールの定義、会話がモデルに収まるかは別の確認で、`hermes -p <名前> prompt-size`（システムプロンプト全体の大きさ）と、セッション内の `/context` で見ます。
 
 ```yaml
-# SANA OS: SOUL.md は 25k〜29k 文字（inline では最大 75k）。中間が切られないよう上限を固定する
+# SANA OS: SOUL.md は 26k〜31k 文字（inline では最大 77k）。中間が切られないよう上限を固定する
 context_file_max_chars: 40000     # mode-inline を使うなら 80000
 ```
 
@@ -238,6 +238,8 @@ auxiliary:
 - ログに `TRUNCATED` や `injection` の警告が出ていないか
 - セッション内で `/context` を実行し、「Context files」の SOUL.md に ✓ が付いているか。◐ は切り詰められた、✗ は読み込まれなかった、⚠ は注入検査に一致したが読み込まれた、という意味です。上限は、そのとき使っているモデルのコンテキスト長で決まるので、モデルを替えたら見直します
 - sana-review では `hermes -p sana-review fallback list` が空か
+
+確認の結果は [`checks/`](checks/README.md) に、記録用紙（`checks/TEMPLATE.md`）を写して残します。読み込みの確認と応答の確認を分け、確かめた Hermes の版・モデル・モード・プロファイルと、確認できなかったことも書きます。Pre-release を外すかどうかは、この記録で決めます。
 
 ---
 
