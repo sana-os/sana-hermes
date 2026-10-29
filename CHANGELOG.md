@@ -15,6 +15,12 @@ Why: the question that matters after an update is whether the model now receives
 
 Versions before 0.4.0 have no tags: they were handed over as files and not kept (see 0.1.0–0.3.0 below).
 
+## Unreleased
+
+- **`checks/`: how the profiles are checked in a running Hermes session, and a record form.** Loading (`/context`, logs, skill list, `skill_view` calls) is recorded apart from answers; each item is "confirmed", "not confirmed" or "differed"; untried combinations stay unconfirmed. Records what is pinned: this package, the SANA OS commit, the Hermes commit actually running, the model. Scope of the first round (GPT-6 Luna and four local models; mode-skills first). Proposed by ChatGPT SANA (2026-10-28); the record lives here, as decided by the author.
+  Observation: Hermes' settings showed the stable channel, but the source install ran `v0.22.5+2989` (`e298669`), 2,989 commits after v0.22.5 (`bf0203a`). The scanner limit and the SOUL.md cap are unchanged there from `b65e078`. The form asks for the commit shown in the settings.
+- README: the size comment in the `config.yaml` example matches 0.6.0 (26k–31k, inline up to 77k).
+
 ## 0.6.0 — 2026-10-27
 
 A minor version: the SANA OS pin moves, so SOUL.md and SKILL.md texts change. Reinstall the profiles. Pre-release until checked in a running Hermes session.
